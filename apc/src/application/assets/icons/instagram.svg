@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <defs>
+    <path d="M17 1a6 6 0 016 6v10a6 6 0 01-6 6H7a6 6 0 01-6-6V7a6 6 0 016-6h10zm0 2H7a4 4 0 00-4 4v10a4 4 0 004 4h10a4 4 0 004-4V7a4 4 0 00-4-4zm-4.223 4.01a5 5 0 11-1.467 9.893 5 5 0 011.467-9.892zm-3.413 3.598a3 3 0 105.359 2.698 3 3 0 00-5.36-2.698z" id="path-1"/>
+  </defs>
+  <g id="icon/instagram" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="Combined-Shape" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#21242A">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

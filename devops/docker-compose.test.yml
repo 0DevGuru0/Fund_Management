@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  minio:
+    ports:
+      - 9001:9000
+    volumes:
+      - type: tmpfs
+        target: /var/lib/minio/data
+
+  postgres:
+    logging:
+      driver: none
+    command: postgres -c fsync=off -c full_page_writes=off -c synchronous_commit=off
+    volumes:
+      - type: tmpfs
+        target: /var/lib/postgresql/data
+    ports:
+      # TODO: we don't use 127.0.0.1 as we couldn't find a way to make it work in GitPod
+      - 5498:5432
+  camunda:
+    environment:
+      - JWT_VALIDATION=disabled
+      - JWK_PROVIDER_URL=
+    ports:
+      # TODO: we don't use 127.0.0.1 as we couldn't find a way to make it work in GitPod
+      - 8088:8080

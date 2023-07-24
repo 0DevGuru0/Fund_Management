@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <defs>
+    <path d="M7.875 19.176H4.868V9.465h3.007v9.71zm.3-12.805a1.762 1.762 0 10-3.523 0 1.762 1.762 0 003.523 0zm10.958 7.462c0-2.607-.55-4.54-3.596-4.54-1.463 0-2.446.732-2.847 1.493h-.002V9.465H9.765v9.71h2.921v-4.82c0-1.263.322-2.487 1.887-2.487 1.544 0 1.594 1.444 1.594 2.566v4.742h2.965v-5.343zM23 20.422V3.578A2.58 2.58 0 0020.422 1H3.578A2.58 2.58 0 001 3.578v16.844A2.58 2.58 0 003.578 23h16.844A2.58 2.58 0 0023 20.422zM20.422 2.719a.86.86 0 01.86.86v16.843a.86.86 0 01-.86.86H3.578a.86.86 0 01-.86-.86V3.578a.86.86 0 01.86-.86h16.844z" id="path-1"/>
+  </defs>
+  <g id="icon/linkedin" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="linkedin" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#21242A">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

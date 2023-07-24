@@ -1,0 +1,7 @@
+schema: https://repo.sf.iknito.com/api/v1/graphql
+extensions:
+  languageService:
+    useSchemaFileDefinitions: true
+  endpoints:
+    default:
+      url: https://repo.sf.iknito.com/api/v1/graphql

@@ -1,0 +1,8 @@
+query getFundsName($query: JSON!, $limit: Int!, $offset: Int!, $sort: JSON) {
+  search(query: $query, offset: $offset, limit: $limit, sort: $sort) {
+    items {
+      _id
+      title
+    }
+  }
+}

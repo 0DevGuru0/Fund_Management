@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 20 20">
+  <title>Logout</title>
+  <defs>
+    <path d="M8.333.833a.833.833 0 010 1.667H4.167a.833.833 0 00-.834.833v13.334c0 .46.373.833.834.833h4.166a.833.833 0 110 1.667H4.167a2.5 2.5 0 01-2.5-2.5V3.333a2.5 2.5 0 012.5-2.5zm5.244 5.244a.833.833 0 011.179 0l3.333 3.334a.85.85 0 01.139.182.83.83 0 01-.139.996l.06-.065a.838.838 0 01-.049.054l-.01.011-3.334 3.334a.833.833 0 01-1.179-1.179l1.91-1.91H7.5a.833.833 0 01-.827-.73L6.667 10c0-.46.373-.833.833-.833h7.988l-1.91-1.911a.834.834 0 01-.075-1.093z" id="path-1"/>
+  </defs>
+  <g id="Style" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="Style/Side---Dashboard" transform="translate(-712 -3557)">
+      <g id="Side---Dashboard-Copy" transform="translate(200 2600)">
+        <g id="Side-Dashboard" transform="translate(400 131)">
+          <g id="Components/Button/48px/Default" transform="translate(36 818)">
+            <g id="Group-4" transform="translate(76 8)">
+              <g id="icon/log-out" transform="matrix(-1 0 0 1 20 0)">
+                <mask id="mask-2" fill="#fff">
+                  <use xlink:href="#path-1"/>
+                </mask>
+                <use id="Combined-Shape" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+                <g id="COLOR/-black" mask="url(#mask-2)" fill="#BCBDBF">
+                  <path id="Color/Black" d="M0 0h20v20H0z"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

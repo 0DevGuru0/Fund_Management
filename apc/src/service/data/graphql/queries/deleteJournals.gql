@@ -1,0 +1,3 @@
+mutation deleteJournals($ids: [ObjectId!]!) {
+  deleteJournals(ids: $ids)
+}

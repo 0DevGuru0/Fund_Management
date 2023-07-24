@@ -1,0 +1,217 @@
+stages:
+  - test
+  - review
+  - build
+  - deploy
+
+### Jobs with no rules default to "except: merge_requests", so they run in all cases except merge requests.
+.prepare:
+  tags:
+    - docker-executer
+  image: node:14.17.0
+  cache: [] # disable gitlab cache (zip). use host mounted dir: /cache
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "master"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "production"'
+  before_script:
+    - npm ci --cache /cache/iknito-workflow/npm-cache --prefer-offline
+    - cd apc
+    - npm install --prefer-offline --no-audit
+    - npm run generate:clients
+
+integration-tests:
+  extends: .prepare
+  stage: test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+  services:
+    - name: postgres:13.3-alpine
+      alias: postgres
+    - name: public.ecr.aws/e7p6x1f3/iknito-camunda:4737c2bf
+      alias: camunda
+  variables:
+    FF_NETWORK_PER_BUILD: 1
+    POSTGRES_USER: iwuser
+    POSTGRES_PASSWORD: iwpass
+    POSTGRES_DB: iwdb
+    JWT_VALIDATION: disabled
+    JWK_PROVIDER_URL: ''
+    DB_URL: jdbc:postgresql://postgres:5432/iwdb
+    DB_USERNAME: iwuser
+    DB_PASSWORD: iwpass
+    WAIT_FOR: postgres:5432
+    WAIT_FOR_TIMEOUT: 60
+    DB_DRIVER: org.postgresql.Driver
+    NODE_ENV: test
+    DATABASE_URL: postgres://iwuser:iwpass@postgres:5432/iwdb?schema=public
+    WF_CAMUNDA_SERVER_ADDRESS: http://camunda:8080/engine-rest/engine/default
+  script:
+    - npx wait-on -c scripts/wait-on-camunda.js http-get://camunda:8080/engine-rest/engine
+    - npx jest --version
+    - npx jest --maxWorkers=4 -c jest.config.integration.js --ci
+
+unit-tests:
+  extends: .prepare
+  stage: test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+  variables:
+    NODE_ENV: test
+  script:
+    - npx jest --maxWorkers=4 --ci
+
+chromatic:
+  extends: .prepare
+  stage: review
+  variables:
+    GIT_STRATEGY: clone
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "master"'
+  script:
+    - cd scripts
+    - npx ts-node publish-chromatic.ts
+
+sonar-scan:
+  stage: review
+  needs: ["integration-tests","unit-tests"]
+  tags:
+    - docker-executer
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  script:
+    - sonar-scanner
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+
+nightly-build:
+  stage: build
+  tags:
+    - shell-executer
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "master"'
+  variables:
+    COMPOSE_DOCKER_CLI_BUILD: "1"
+    DOCKER_BUILDKIT: "1"
+    AWS_DEFAULT_REGION: eu-central-1
+    AWS_ACCESS_KEY_ID: ${AWS_ECR_READWRITE_ACCESS_KEY} # GitLab CI/CD group-level variable
+    AWS_SECRET_ACCESS_KEY: ${AWS_ECR_READWRITE_SECRET} # GitLab CI/CD group-level variable
+    FILE_STORAGE_BUCKET: iknito-workflow-nightly
+    FILE_STORAGE_DOWNLOAD_SIGNED_URL_EXPIRATION_TIME: '1200'
+    FILE_STORAGE_UPLOAD_SIGNED_URL_EXPIRATION_TIME: '1200'
+    FILE_STORAGE_MAX_SINGLE_FILE_UPLOAD_SIZE: 52428800
+    FILE_STORAGE_AWS_REGION: eu-central-1
+    # AWS_ECR_REGISTRY # GitLab CI/CD group-level variable
+  script:
+    - cd devops
+    - npm i
+    - cd scripts
+    - aws ecr get-login-password | docker login --username AWS --password-stdin ${AWS_ECR_REGISTRY}
+    - npx ts-node build-push.ts nightly
+
+nightly-deploy:
+  stage: deploy
+  needs: ["nightly-build"]
+  image: avidcloud/kubectl:v1.20.10
+  tags:
+    - docker-executer
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "master"'
+  cache: []
+  variables:
+    DATABASE_URL: $NIGHTLY_DATABASE_URL
+    WF_CAMUNDA_SERVER_ADDRESS: http://localhost:8888/engine-rest
+    # IKNITO_WORKFLOW_CI_JOB_TOKEN_WRITE # GitLab CI/CD project-level variable. Masked.
+  script:
+    - kubectl config set-context iknito-workflow-nightly --cluster=gitlab-deploy --user=gitlab-deploy --namespace=iknito-workflow-nightly
+    - kubectl config use-context iknito-workflow-nightly
+    - kubectl port-forward svc/iknito-camunda 8888:8080 > /dev/null 2>&1 &
+    - export KUBECTL_PID=$!
+    - cd apc
+    - npm i
+    - npx prisma migrate deploy --schema ./prisma/backendDatabase/schema.prisma
+    - npm run camunda:migrate
+    - kill -9 $KUBECTL_PID
+    ### Deploy
+    - cd ../devops
+    - npm i
+    - git config --global user.email "gitlab@avidcloud.io"
+    - git config --global user.name "Gitlab CI/CD"
+    - git remote set-url origin https://iknito-workflow-ci-job-token-write:${IKNITO_WORKFLOW_CI_JOB_TOKEN_WRITE}@gitlab.com/avidarvand/iknito-workflow-apps.git
+    - npx ts-node scripts/deploy.ts nightly
+  # GitLab Deployment Environment = Kubernetes Namespace
+  environment:
+      name: iknito-workflow-nightly
+      url: http://nightly.smartfund.iknito.com/
+
+
+production-build:
+  stage: build
+  tags:
+    - shell-executer
+  ### https://docs.gitlab.com/ee/ci/yaml/index.html#only--except
+  ### only and except are not being actively developed. rules is the preferred keyword to control when to add jobs to pipelines.
+  # only:
+  #   - IW-551
+  #   - master
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "production"'
+  variables:
+    COMPOSE_DOCKER_CLI_BUILD: "1"
+    DOCKER_BUILDKIT: "1"
+    AWS_DEFAULT_REGION: eu-central-1
+    AWS_ACCESS_KEY_ID: ${AWS_ECR_READWRITE_ACCESS_KEY} # GitLab CI/CD group-level variable
+    AWS_SECRET_ACCESS_KEY: ${AWS_ECR_READWRITE_SECRET} # GitLab CI/CD group-level variable
+    FILE_STORAGE_BUCKET: iknito-workflow-production
+    FILE_STORAGE_DOWNLOAD_SIGNED_URL_EXPIRATION_TIME: '1200'
+    FILE_STORAGE_UPLOAD_SIGNED_URL_EXPIRATION_TIME: '1200'
+    FILE_STORAGE_MAX_SINGLE_FILE_UPLOAD_SIZE: 52428800
+    FILE_STORAGE_AWS_REGION: eu-central-1
+    # AWS_ECR_REGISTRY # GitLab CI/CD group-level variable
+  script:
+    - cd devops
+    - npm i
+    - cd scripts
+    - aws ecr get-login-password | docker login --username AWS --password-stdin ${AWS_ECR_REGISTRY}
+    - npx ts-node build-push.ts production
+
+production-deploy:
+  stage: deploy
+  needs: ["production-build"]
+  image: avidcloud/kubectl:v1.20.10
+  tags:
+    - docker-executer
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "production"'
+  cache: []
+  variables:
+    DATABASE_URL: $PRODUCTION_DATABASE_URL
+    WF_CAMUNDA_SERVER_ADDRESS: http://localhost:8888/engine-rest
+  script:
+    - kubectl config set-context iknito-workflow-production --cluster=gitlab-deploy --user=gitlab-deploy --namespace=iknito-workflow-production
+    - kubectl config use-context iknito-workflow-production
+    - kubectl port-forward svc/iknito-camunda 8888:8080 > /dev/null 2>&1 &
+    - cd apc
+    - npm i
+    - npx prisma migrate deploy --schema ./prisma/backendDatabase/schema.prisma
+    - npm run camunda:migrate
+    ### Deploy
+    - cd ../devops
+    - npm i
+    - git config --global user.email "gitlab@avidcloud.io"
+    - git config --global user.name "Gitlab CI/CD"
+    - git remote set-url origin https://iknito-workflow-ci-job-token-write:${IKNITO_WORKFLOW_CI_JOB_TOKEN_WRITE}@gitlab.com/avidarvand/iknito-workflow-apps.git
+    - npx ts-node scripts/deploy.ts production
+  # GitLab Deployment Environment = Kubernetes Namespace
+  environment:
+      name: iknito-workflow-production
+      url: http://smartfund.iknito.com/

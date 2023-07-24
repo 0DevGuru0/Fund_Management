@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13.1-alpine
+    environment:
+      - POSTGRES_USER=iknito_workflow
+      - POSTGRES_PASSWORD=iknito_workflow
+      # This is for camunda, Prisma will automatically generate the iknito_workflow_test db
+      - POSTGRES_DB=iknito_workflow_camunda
+  camunda:
+    image: public.ecr.aws/e7p6x1f3/iknito-camunda:4737c2bf
+    depends_on:
+      - postgres
+    extra_hosts:
+      host.docker.internal: host-gateway
+    environment:
+      - APC_APP_BACKEND=http://host.docker.internal:3000/api/v1
+      - APP_HOST=http://localhost:3000
+      - DEFAULT_GROUP_ID=general
+      # this makes everything (specially migration) easier and the JWK_PROVIDER_URL useless!
+      - JWT_VALIDATION=disabled
+      # this is because of the Azdegar service issues that does support the JWT_VALIDATION=disabled properly
+      - JWK_PROVIDER_URL=https://accounts.iknito.com/auth/realms/ScienceHubDevelopment/protocol/openid-connect/certs
+      - WAIT_FOR=postgres:5432
+      - WAIT_FOR_TIMEOUT=60
+      - DB_DRIVER=org.postgresql.Driver
+      - DB_URL=jdbc:postgresql://postgres:5432/iknito_workflow_camunda
+      - DB_USERNAME=iknito_workflow
+      - DB_PASSWORD=iknito_workflow
+      # TODO: make these configs similar to Camunda (e.g. DB_URL)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/iknito_workflow_camunda
+      - SPRING_DATASOURCE_USERNAME=iknito_workflow
+      - SPRING_DATASOURCE_PASSWORD=iknito_workflow
+  minio:
+    image: bitnami/minio:2020-debian-10
+    environment:
+      - MINIO_ACCESS_KEY=minio
+      - MINIO_SECRET_KEY=minio123
+      - MINIO_DEFAULT_BUCKETS=general-repo

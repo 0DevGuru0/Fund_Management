@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <title>External Link</title>
+  <defs>
+    <path d="M11 5a1 1 0 010 2H5a1 1 0 00-1 1v11a1 1 0 001 1h11a1 1 0 001-1v-6a1 1 0 012 0v6a3 3 0 01-3 3H5a3 3 0 01-3-3V8a3 3 0 013-3zm10-3a1.02 1.02 0 01.484.125.878.878 0 01.111.071c.04.03.077.061.112.097l-.09-.08A1.006 1.006 0 0122 3l-.004-.086.003.054L22 3v6a1 1 0 01-2 0V5.414l-9.293 9.293a1 1 0 01-1.32.083l-.094-.083a1 1 0 010-1.414L18.584 4H15a1 1 0 01-.993-.883L14 3a1 1 0 011-1z" id="path-1"/>
+  </defs>
+  <g id="icon/external-link" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="Combined-Shape" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#21242A">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

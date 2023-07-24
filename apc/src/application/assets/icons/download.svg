@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <title>Download</title>
+  <defs>
+    <path d="M12.01 11.012a1 1 0 011 1l-.001 6.585 2.293-2.292a1 1 0 011.32-.083l.094.083a1 1 0 010 1.414l-4 4a1.006 1.006 0 01-.707.293l.09-.004a1.006 1.006 0 01-.07.004h-.02a1.02 1.02 0 01-.485-.125.886.886 0 01-.102-.065.997.997 0 01-.12-.103l.09.08a1.006 1.006 0 01-.09-.08l-4-4a1 1 0 111.414-1.414l2.293 2.292v-6.585a1 1 0 01.883-.993zM1.02 6.84a9 9 0 0116.47 1.172h.518a6 6 0 013.456 10.908 1 1 0 01-1.15-1.636 4 4 0 00-2.305-7.272h-1.26a1 1 0 01-.969-.752 7 7 0 10-12.022 6.38 1 1 0 01-1.498 1.325A9 9 0 011.02 6.84z" id="path-1"/>
+  </defs>
+  <g id="icon/download-cloud" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="Combined-Shape" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#21242A">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

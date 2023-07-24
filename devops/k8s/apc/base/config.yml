@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iknito-smartfund
+data:
+  WF_REQ_LOG_LEVEL: none
+  WF_CAMUNDA_SERVER_ADDRESS: 'http://iknito-camunda:8080/engine-rest'
+  WF_SERVICE_SERVER_ADDRESS: 'http://iknito-camunda:8080/azdegar/rest'
+  REPO_PARENT_ID_FUND: 6083fb8955b25f0006e3d88a
+  REPO_PARENT_ID_JOURNAL: 6083fc8655b25f0006e3d88d
+  REPO_PARENT_ID_PUBLISHER: 6083fdf355b25f0006e3d88e
+  REPO_SUBJECT_TREE_ID: 60fbbcac0023940006e0d9cb
+  FILE_STORAGE_DOWNLOAD_SIGNED_URL_EXPIRATION_TIME: '1200'
+  FILE_STORAGE_UPLOAD_SIGNED_URL_EXPIRATION_TIME: '1200'
+  FILE_STORAGE_MAX_SINGLE_FILE_UPLOAD_SIZE: '52428800'
+  FILE_STORAGE_AWS_REGION: eu-central-1
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iknito-camunda
+data:
+   # TODO: we disabled this to make migrating camunda processes from CI possible, this is risky and should be reverted as camunda would not validate JWT now
+  JWT_VALIDATION:  disabled
+  APC_APP_BACKEND:  http://iknito-smartfund:3000/api/v1
+  DEFAULT_GROUP_ID:  general
+  DB_DRIVER:  org.postgresql.Driver
+  MAIL_CONFIG:  /camunda/conf/mail-config.properties

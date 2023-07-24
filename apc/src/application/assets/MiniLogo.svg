@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">
+  <title>Mini-Logo</title>
+  <g id="Style" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="Style/Side---Dashboard" transform="translate(-1033 -523)">
+      <g id="Side---Dashboard-Copy-2" transform="translate(150 150)">
+        <g id="Side-Dashboard-Copy-8" transform="translate(847 239)">
+          <g id="Components/Suggestive/Single/Default-max-Height" transform="translate(12 18)">
+            <g id="Item-01" transform="translate(12 110)">
+              <g id="icon---iKnito" transform="translate(12 6)">
+                <path d="M18 0c3.161 0 6.323.234 9.485.703l1.053.165a8 8 0 016.594 6.594A64.76 64.76 0 0136 18c0 3.512-.29 7.024-.867 10.536a8 8 0 01-6.594 6.594c-3.522.58-7.035.87-10.539.87-3.187 0-6.375-.24-9.562-.72l-.956-.151a8 8 0 01-6.578-6.546A62.764 62.764 0 010 18c0-3.208.25-6.416.747-9.623l.157-.963A8 8 0 017.482.87 64.243 64.243 0 0118 0zm2.5 14.154h-4.886L15.5 28l5-3.863v-9.983zM18 8c-1.33 0-2.407.995-2.407 2.222 0 1.228 1.077 2.222 2.407 2.222s2.407-.994 2.407-2.222C20.407 8.995 19.33 8 18 8z" id="Combined-Shape" fill="#1B62F8"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

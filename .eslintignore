@@ -1,0 +1,11 @@
+!.eslintrc.js
+# TODO: remove this after upgrading @typescript-eslint/eslint-plugin and @typescript-eslint/parser
+# **/ajvTypes.ts
+**/*.openapi.json
+
+apc/build/*
+# or we can start below directory using .
+apc/pg-migrations/*
+apc/src/**/generated
+apc/storybook-build/*
+apc/prisma/migrations/*

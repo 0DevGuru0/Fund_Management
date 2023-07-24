@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <defs>
+    <path d="M21.09 17.457H2.91c-1.213 0-1.213-1.818 0-1.818a1.818 1.818 0 001.817-1.819V9.274a7.273 7.273 0 1114.546 0v4.546c0 1.004.814 1.819 1.818 1.819 1.212 0 1.212 1.818 0 1.818zm-6.73 3.184a2.727 2.727 0 01-4.72 0 .91.91 0 01.787-1.365h3.146c.7 0 1.138.759.786 1.365z" id="path-1"/>
+  </defs>
+  <g id="icon/bell-fill" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="Shape" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#21242A">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

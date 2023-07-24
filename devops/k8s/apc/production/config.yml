@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iknito-smartfund
+data:
+  NODE_OPTIONS: '--max_old_space_size=4096'
+  OIDC_CLIENT_KEYCLOAK_UNIQUE_ID: 21ad65a6-71c3-4c5e-a644-f1f24db805df
+  OIDC_CLIENT_ID: smartfund-api
+  OIDC_REALM: ScienceHub
+  OIDC_PROVIDER_ADDRESS: https://accounts.iknito.com/auth/
+  OIDC_ENDPOINT: https://accounts.iknito.com/auth/realms/ScienceHub
+  FILE_STORAGE_BUCKET: iknito-workflow-production
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iknito-camunda
+data:
+  JWK_PROVIDER_URL: https://accounts.iknito.com/auth/realms/ScienceHub/protocol/openid-connect/certs
+  SPRING_DATASOURCE_URL: jdbc:postgresql://iknito-postgresql.cuh5x3r2vjnz.eu-central-1.rds.amazonaws.com:54325/iknito-camunda-production
+  SPRING_DATASOURCE_USERNAME: postgres
+  DB_URL: jdbc:postgresql://iknito-postgresql.cuh5x3r2vjnz.eu-central-1.rds.amazonaws.com:54325/iknito-camunda-production
+  DB_USERNAME: postgres

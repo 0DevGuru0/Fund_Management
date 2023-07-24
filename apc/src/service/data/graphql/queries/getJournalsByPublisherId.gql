@@ -1,0 +1,10 @@
+query getJournalsByPublisherId($query: JSON!, $limit: Int!, $offset: Int!, $sort: JSON) {
+  search(query: $query, limit: $limit, offset: $offset, sort: $sort) {
+    items {
+      ... on Journal {
+        id: _id
+        title
+      }
+    }
+  }
+}

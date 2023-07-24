@@ -1,0 +1,15 @@
+query getAllOrganizations($query: JSON!, $limit: Int!, $offset: Int!) {
+  search(query: $query, offset: $offset, limit: $limit) {
+    total
+    items {
+      ... on Organization {
+        id: _id
+        title
+        description
+        url
+        email
+        type
+      }
+    }
+  }
+}

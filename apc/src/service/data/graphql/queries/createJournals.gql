@@ -1,0 +1,10 @@
+mutation createJournals($items: [CreateJournals_JournalItems!]!) {
+  createJournals(items: $items) {
+    _id
+    title
+    publisher {
+      _id
+      title
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "display": "form",
+  "settings": {
+    "recaptcha": {
+      "isEnabled": "true",
+      "siteKey": "6LcbBlIaAAAAALO-boii_2Kf2Td4xJNxvKx_oZZ3"
+    }
+  },
+  "components": [
+    {
+      "type": "textfield",
+      "key": "executionId",
+      "input": true,
+      "label": "Execution Id",
+      "clearOnHide": false,
+      "persistent": false,
+      "hidden": true,
+      "disabled": true
+    },
+    {
+      "components": [
+        {
+          "type": "file",
+          "key": "acceptanceFiles",
+          "input": true,
+          "label": "File(s)",
+          "multiple": true,
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": { "required": true },
+          "disableOnInvalid": false,
+          "fileMinSize": "30KB",
+          "fileMaxSize": "3MB",
+          "storage": "base64",
+          "filePattern": ".pdf,.jpg,.png"
+        },
+        {
+          "type": "textarea",
+          "key": "comments",
+          "input": true,
+          "label": "Comments",
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": {},
+          "disableOnInvalid": false
+        }
+      ],
+      "collapsed": false,
+      "reorder": false
+    }
+  ]
+}

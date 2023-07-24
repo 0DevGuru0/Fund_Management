@@ -1,0 +1,429 @@
+{
+  "display": "form",
+  "settings": {
+    "recaptcha": {
+      "isEnabled": "true",
+      "siteKey": "6LcbBlIaAAAAALO-boii_2Kf2Td4xJNxvKx_oZZ3"
+    }
+  },
+  "components": [
+    {
+      "type": "textfield",
+      "key": "executionId",
+      "input": true,
+      "label": "Execution Id",
+      "clearOnHide": false,
+      "persistent": false,
+      "hidden": true,
+      "disabled": true
+    },
+    {
+      "components": [
+        {
+          "type": "fieldset",
+          "key": "fieldset_dividerJournal",
+          "input": false,
+          "label": "dividerJournal",
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": {},
+          "legend": "Journal",
+          "components": [
+            {
+              "type": "columns",
+              "key": "Start_Columns1",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "select",
+                      "key": "publisher",
+                      "input": true,
+                      "label": "Publisher",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": { "required": true },
+                      "data": {
+                        "url": "{{form.variables.apiServerAddress}}/workflow/forms-data/publishers?limit={{ limit }}&skip={{ skip }}",
+                        "method": "GET",
+                        "headers": [
+                          {
+                            "key": "authorization",
+                            "value": "{{form.variables.accessToken}}"
+                          }
+                        ]
+                      },
+                      "limit": 10,
+                      "disabled": false,
+                      "lazyLoad": true,
+                      "disableOnInvalid": false,
+                      "dataSrc": "url",
+                      "searchField": "publisherName",
+                      "template": "<span>{{item.title}}</span>"
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "select",
+                      "key": "journal",
+                      "input": true,
+                      "label": "Journal",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {},
+                      "data": {
+                        "url": "{{form.variables.apiServerAddress}}/workflow/forms-data/journals?publisherId={{data.publisher.id}}&limit={{ limit }}&skip={{ skip }}",
+                        "method": "GET",
+                        "headers": [
+                          {
+                            "key": "authorization",
+                            "value": "{{form.variables.accessToken}}"
+                          }
+                        ]
+                      },
+                      "limit": 10,
+                      "disabled": false,
+                      "clearOnRefresh": true,
+                      "lazyLoad": true,
+                      "disableOnInvalid": false,
+                      "refreshOn": "publisher",
+                      "redrawOn": "publisher",
+                      "dataSrc": "url",
+                      "template": "<span>{{item.title}}</span>",
+                      "selectValues": "content",
+                      "searchField": "title"
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns2",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 12,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "checkbox",
+                      "key": "notListed",
+                      "input": true,
+                      "label": "Not listed",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {},
+                      "disableOnInvalid": false
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns3",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "newJournalName",
+                      "input": true,
+                      "label": "Journal Name",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": { "required": true },
+                      "customConditional": "show=data.notListed",
+                      "disableOnInvalid": false
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "newJournalIssn",
+                      "input": true,
+                      "label": "ISSN",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {
+                        "required": true,
+                        "pattern": "\\d{4}-\\d{3}(\\d|x|X)"
+                      },
+                      "customConditional": "show=data.notListed",
+                      "disableOnInvalid": false,
+                      "inputMask": "9999-999*"
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns4",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "number",
+                      "key": "price",
+                      "input": true,
+                      "label": "Price",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": { "required": true, "min": 10, "max": 20000 },
+                      "disableOnInvalid": false,
+                      "customClass": "az-number az-width-150",
+                      "delimiter": true
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "select",
+                      "key": "currency",
+                      "input": true,
+                      "label": "Currency",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {},
+                      "data": {
+                        "url": "{{form.variables.workflowServiceAddress}}/iknito/data/currency.json"
+                      },
+                      "disabled": false,
+                      "disableOnInvalid": false,
+                      "dataSrc": "url",
+                      "template": "<span>{{item.label}}</span>"
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            }
+          ],
+          "disableOnInvalid": false
+        },
+        {
+          "type": "fieldset",
+          "key": "fieldset_dividerArticle",
+          "input": false,
+          "label": "dividerArticle",
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": {},
+          "legend": "Article",
+          "components": [
+            {
+              "type": "columns",
+              "key": "Start_Columns5",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "articleTitle",
+                      "input": true,
+                      "label": "Article Title",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": { "required": true },
+                      "disableOnInvalid": false
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "file",
+                      "key": "articleFiles",
+                      "input": true,
+                      "label": "File(s)",
+                      "multiple": true,
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": { "required": true },
+                      "disableOnInvalid": false,
+                      "fileMinSize": "30KB",
+                      "fileMaxSize": "3MB",
+                      "storage": "base64",
+                      "filePattern": ".pdf"
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns7",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "affiliation",
+                      "input": true,
+                      "label": "Affiliation",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {},
+                      "disableOnInvalid": false
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "orcid",
+                      "input": true,
+                      "label": "ORCID",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {},
+                      "disableOnInvalid": false
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns8",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "select",
+                      "key": "sciArea",
+                      "input": true,
+                      "label": "Subject Category",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {},
+                      "data": {
+                        "url": "{{form.variables.apiServerAddress}}/workflow/forms-data/subjects?treeId={{form.variables.subjectTreeId}}",
+                        "method": "GET",
+                        "headers": [
+                          {
+                            "key": "authorization",
+                            "value": "{{form.variables.accessToken}}"
+                          }
+                        ]
+                      },
+                      "disabled": false,
+                      "disableOnInvalid": false,
+                      "dataSrc": "url",
+                      "template": "<span>{{item.title}}</span>"
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "select",
+                      "key": "sciCategory",
+                      "input": true,
+                      "label": "Main Subject",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {},
+                      "data": {
+                        "url": "{{form.variables.apiServerAddress}}/workflow/forms-data/subjects?treeId={{form.variables.subjectTreeId}}&parentSubjectId={{data.sciArea.id??'NO_ID'}}",
+                        "method": "GET",
+                        "headers": [
+                          {
+                            "key": "authorization",
+                            "value": "{{form.variables.accessToken}}"
+                          }
+                        ]
+                      },
+                      "refreshOn": "sciArea",
+                      "redrawOn": "sciArea",
+                      "clearOnRefresh": true,
+                      "disabled": false,
+                      "disableOnInvalid": false,
+                      "dataSrc": "url",
+                      "template": "<span>{{item.title}}</span>"
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            }
+          ],
+          "disableOnInvalid": false
+        }
+      ],
+      "collapsed": false,
+      "reorder": false
+    }
+  ]
+}

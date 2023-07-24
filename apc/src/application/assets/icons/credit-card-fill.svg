@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <title>Credit Card Filled</title>
+  <defs>
+    <path d="M19.5 5A2.5 2.5 0 0122 7.5v10a2.5 2.5 0 01-2.5 2.5h-15A2.5 2.5 0 012 17.5v-10A2.5 2.5 0 014.5 5h15zm-.216 2H4.716C4 7.008 4 7.07 4 7.668v2.666C4 11 4 11 5 11h14c1 0 1 0 1-.667V7.667c0-.597 0-.66-.716-.666z" id="path-1"/>
+  </defs>
+  <g id="icon/credit-card-fill" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="Combined-Shape" fill="#000" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#21242A">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,56 @@
+{
+  "name": "iknito-workflow",
+  "engines": {
+    "node": "^14.16.1"
+  },
+  "private": true,
+  "scripts": {
+    "prereinit": "npm install",
+    "reinit": "npm-run-all -p init:apc init:devops -s init:services",
+    "init:apc": "cd apc && npm install && npm run generate:clients",
+    "init:devops": "cd devops && npm install",
+    "init:services": "sh scripts/initServices.sh",
+    "precommit": "lerna run precommit --parallel"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^13.1.0",
+    "@graphql-eslint/eslint-plugin": "^2.0.1",
+    "@next/eslint-plugin-next": "^11.0.1",
+    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/parser": "^4.28.0",
+    "commitlint": "^13.1.0",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.5",
+    "eslint-plugin-jest-formatting": "^2.0.1",
+    "eslint-plugin-jsdoc": "^32.2.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-unicorn": "^28.0.2",
+    "graphql": "^15.5.1",
+    "husky": "^4.3.8",
+    "jest-mock-extended": "^1.0.15",
+    "lerna": "^3.22.1",
+    "lint-staged": "^10.5.4",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.2.1",
+    "stylelint": "^13.10.0",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-order": "^4.1.0",
+    "typescript": "^4.3.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit && lint-staged ",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ]
+  }
+}

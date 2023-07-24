@@ -1,0 +1,36 @@
+query getAllJournals($query: JSON!, $limit: Int!, $offset: Int!) {
+  search(query: $query, offset: $offset, limit: $limit) {
+    total
+    items {
+      __typename
+      _id
+      title
+      ... on Journal {
+        publisher {
+          title
+        }
+        parentId
+        externalId
+        createdAt
+        updatedAt
+        alternativeTitle
+        printISSN
+        onlineISSN
+        subjects
+        url
+        scope
+        apc
+        apcPrice
+        currency
+        sjrQuartile
+        jcrQuartile
+        embargo
+        licenseType
+        licenseAttribute
+        keywords
+        languages
+        reviewProcess
+      }
+    }
+  }
+}

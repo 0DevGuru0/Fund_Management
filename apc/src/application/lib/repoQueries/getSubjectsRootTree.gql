@@ -1,0 +1,10 @@
+query getSubjectsRootTree($id: ObjectId!) {
+  tree(_id: $id) {
+    nodes {
+      id: _id
+      title
+      children
+    }
+    rootNodesId
+  }
+}

@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: iknito-workflow-nightly
+
+bases:
+  - ../base
+
+resources:
+  - namespace.yml
+
+patchesStrategicMerge:
+  - patches.yml
+  - config.yml
+  - ingress.yml
+
+images:
+  - name: 575302467300.dkr.ecr.eu-central-1.amazonaws.com/iknito-workflow/smartfund
+    newTag: latest

@@ -1,0 +1,7 @@
+# Can be used to count journals, organizations, and fund (according to the provided query)
+
+query getNumberOfItems($query: JSON!) {
+  search(query: $query, offset: 0, limit: 10, accurateTotal: true) {
+    total
+  }
+}

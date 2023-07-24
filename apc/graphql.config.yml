@@ -1,0 +1,46 @@
+schema: https://repo.sf.iknito.com/api/v1/graphql
+extensions:
+  codegen:
+    overwrite: true
+    config:
+      declarationKind: interface
+      scalars:
+        DateTime: Date
+        Date: Date
+        Time: Date
+        JSON: '{ [key: string]: any }'
+        ObjectId: string
+        Upload: 'FileList | File | Blob'
+      enumsAsTypes: true
+      pureMagicComment: true
+    generates:
+      src/service/generated/repoGqlTypes.ts:
+        config:
+          declarationKind: interface
+          scalars:
+            DateTime: string
+            Date: string
+            Time: string
+            JSON: '{ [key: string]: any }'
+            ObjectId: string
+            Upload: 'FileList | File | Blob'
+          enumsAsTypes: true
+          pureMagicComment: true
+        documents: src/service/**/*.gql
+        plugins:
+          - typescript
+          - typescript-operations
+          - typescript-graphql-request
+
+      src/application/lib/generated/repoGqlTypes.tsx:
+        documents: 'src/application/lib/repoQueries/**/*.gql'
+        plugins:
+          - typescript
+          - typescript-operations
+          - typescript-urql
+
+  languageService:
+    useSchemaFileDefinitions: true
+  endpoints:
+    default:
+      url: https://repo.sf.iknito.com/api/v1/graphql

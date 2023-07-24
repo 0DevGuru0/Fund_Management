@@ -1,0 +1,754 @@
+{
+  "display": "form",
+  "components": [
+    {
+      "label": "Panel",
+      "title": "Article Processing Charge",
+      "collapsible": false,
+      "mask": false,
+      "tableView": false,
+      "alwaysEnabled": false,
+      "theme": "success",
+      "type": "panel",
+      "input": false,
+      "key": "panelMain",
+      "conditional": {
+        "show": "",
+        "when": "",
+        "json": ""
+      },
+      "components": [
+        {
+          "type": "fieldset",
+          "key": "fieldset_dividerJournal",
+          "input": false,
+          "label": "dividerJournal",
+          "clearOnHide": false,
+          "persistent": "client-only",
+          "hidden": false,
+          "validate": {},
+          "disabled": true,
+          "legend": "Journal",
+          "components": [
+            {
+              "type": "columns",
+              "key": "Start_Columns1",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "publisher.label",
+                      "input": true,
+                      "label": "Publisher",
+                      "multiple": false,
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "journal.label",
+                      "input": true,
+                      "label": "Journal",
+                      "multiple": false,
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns2",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 12,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "checkbox",
+                      "key": "notListed",
+                      "input": true,
+                      "label": "Not listed",
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns3",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "newJournalName",
+                      "input": true,
+                      "label": "Journal Name",
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "customConditional": "show=data.notListed",
+                      "disableOnInvalid": false
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "newJournalIssn",
+                      "input": true,
+                      "label": "ISSN",
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": { "pattern": "\\d{4}-\\d{3}(\\d|x|X)" },
+                      "disabled": true,
+                      "customConditional": "show=data.notListed",
+                      "disableOnInvalid": false,
+                      "inputMask": "9999-999*"
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns4",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "number",
+                      "key": "price",
+                      "input": true,
+                      "label": "Price",
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": { "min": 10, "max": 20000 },
+                      "disabled": true,
+                      "disableOnInvalid": false,
+                      "customClass": "az-number az-width-150",
+                      "delimiter": true
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "currency.label",
+                      "input": true,
+                      "label": "Currency",
+                      "multiple": false,
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            }
+          ],
+          "disableOnInvalid": false
+        },
+        {
+          "type": "fieldset",
+          "key": "fieldset_dividerArticle",
+          "input": false,
+          "label": "dividerArticle",
+          "clearOnHide": false,
+          "persistent": "client-only",
+          "hidden": false,
+          "validate": {},
+          "disabled": true,
+          "legend": "Article",
+          "components": [
+            {
+              "type": "columns",
+              "key": "Start_Columns5",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "articleTitle",
+                      "input": true,
+                      "label": "Article Title",
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "file",
+                      "key": "articleFiles",
+                      "input": true,
+                      "label": "File(s)",
+                      "multiple": true,
+                      "clearOnHide": false,
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false,
+                      "fileMinSize": "30KB",
+                      "fileMaxSize": "3MB",
+                      "storage": "base64",
+                      "filePattern": ".pdf"
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns6",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns7",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "affiliation",
+                      "input": true,
+                      "label": "Affiliation",
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "orcid",
+                      "input": true,
+                      "label": "ORCID",
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns8",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "columns": [
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "sciArea.label",
+                      "input": true,
+                      "label": "Subject Area",
+                      "multiple": false,
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false
+                    }
+                  ]
+                },
+                {
+                  "width": 6,
+                  "type": "column",
+                  "components": [
+                    {
+                      "type": "textfield",
+                      "key": "sciCategory.label",
+                      "input": true,
+                      "label": "Subject Category",
+                      "multiple": false,
+                      "clearOnHide": false,
+                      "persistent": "client-only",
+                      "hidden": false,
+                      "validate": {},
+                      "disabled": true,
+                      "disableOnInvalid": false
+                    }
+                  ]
+                }
+              ],
+              "disableOnInvalid": false
+            },
+            {
+              "type": "columns",
+              "key": "Start_Columns9",
+              "input": false,
+              "label": "Columns",
+              "clearOnHide": false,
+              "hidden": false,
+              "validate": {},
+              "disableOnInvalid": false
+            }
+          ],
+          "disableOnInvalid": false
+        },
+        {
+          "type": "columns",
+          "key": "buttonsColumns",
+          "input": false,
+          "label": "Columns",
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": {},
+          "columns": [
+            {
+              "width": 6,
+              "type": "column",
+              "components": [
+                {
+                  "type": "htmlelement",
+                  "key": "placeholderStart",
+                  "input": true,
+                  "label": "",
+                  "clearOnHide": false,
+                  "hidden": false,
+                  "validate": {},
+                  "disableOnInvalid": false,
+                  "content": ""
+                }
+              ]
+            }
+          ],
+          "disableOnInvalid": false
+        },
+        {
+          "type": "file",
+          "key": "acceptanceFiles",
+          "input": true,
+          "label": "File(s)",
+          "multiple": true,
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": {},
+          "disabled": true,
+          "disableOnInvalid": false,
+          "fileMinSize": "30KB",
+          "fileMaxSize": "3MB",
+          "storage": "base64",
+          "filePattern": ".pdf,.jpg,.png"
+        },
+        {
+          "type": "textarea",
+          "key": "comments",
+          "input": true,
+          "label": "Comments",
+          "clearOnHide": false,
+          "persistent": "client-only",
+          "hidden": false,
+          "validate": {},
+          "disabled": true,
+          "disableOnInvalid": false
+        },
+        {
+          "type": "columns",
+          "key": "buttonsColumns",
+          "input": false,
+          "label": "Columns",
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": {},
+          "columns": [
+            {
+              "width": 2,
+              "type": "column",
+              "components": [
+                {
+                  "type": "textfield",
+                  "key": "assigneeUpdateStatus",
+                  "input": true,
+                  "label": "Assignee ID",
+                  "clearOnHide": false,
+                  "hidden": true,
+                  "validate": {},
+                  "disabled": true,
+                  "disableOnInvalid": false,
+                  "customClass": "az-font-9"
+                }
+              ]
+            },
+            {
+              "width": 4,
+              "type": "column",
+              "components": [
+                {
+                  "type": "textfield",
+                  "key": "assigneeUpdateStatusLabel",
+                  "input": true,
+                  "label": "Assignee",
+                  "clearOnHide": false,
+                  "hidden": false,
+                  "validate": {},
+                  "disabled": true,
+                  "disableOnInvalid": false,
+                  "customClass": "az-font-10",
+                  "customDefaultValue": "let token = null; const url = form.variables.workflowServiceAddress+'/iknito/rest/user/'+data.assigneeUpdateStatus;let xhttp = new XMLHttpRequest();xhttp.onreadystatechange=function(){if(this.readyState === 4 && this.status === 200) {let user = JSON.parse(xhttp.responseText);value = user.label;}};xhttp.open('GET', url, false);  if (token) {xhttp.setRequestHeader('Authorization', token);} else {xhttp.withCredentials = true;}xhttp.send();"
+                }
+              ]
+            },
+            {
+              "width": 4,
+              "type": "column",
+              "components": [
+                {
+                  "type": "number",
+                  "key": "UpdateStatus_counter",
+                  "input": true,
+                  "label": "Counter",
+                  "clearOnHide": false,
+                  "persistent": "client-only",
+                  "hidden": true,
+                  "validate": {},
+                  "disableOnInvalid": false
+                }
+              ]
+            },
+            {
+              "width": 2,
+              "type": "column",
+              "components": [
+                {
+                  "type": "number",
+                  "key": "UpdateStatus_displayCounter",
+                  "input": true,
+                  "label": "Repetitions",
+                  "clearOnHide": false,
+                  "hidden": false,
+                  "validate": {},
+                  "disabled": true,
+                  "disableOnInvalid": false,
+                  "calculateValue": "if(data.UpdateStatus_counter!=null && data.UpdateStatus_counter!=0) value = (data.UpdateStatus_counter);else value=0;",
+                  "customClass": "az-counter az-font-10"
+                }
+              ]
+            }
+          ],
+          "disableOnInvalid": false
+        },
+        {
+          "type": "radio",
+          "key": "evaluation",
+          "input": true,
+          "label": "Evaluation result",
+          "clearOnHide": false,
+          "persistent": "client-only",
+          "hidden": false,
+          "validate": {},
+          "values": [
+            { "value": "approved", "label": "Approved" },
+            { "value": "rejected", "label": "Rejected: Need to complete" },
+            { "value": "invalid", "label": "Rejected: Invalid documents" }
+          ],
+          "disabled": true,
+          "disableOnInvalid": false,
+          "inline": true
+        },
+        {
+          "type": "columns",
+          "key": "buttonsColumns",
+          "input": false,
+          "label": "Columns",
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": {},
+          "columns": [
+            {
+              "width": 2,
+              "type": "column",
+              "components": [
+                {
+                  "type": "textfield",
+                  "key": "assigneeRequestApproval",
+                  "input": true,
+                  "label": "Assignee ID",
+                  "clearOnHide": false,
+                  "hidden": true,
+                  "validate": {},
+                  "disabled": true,
+                  "disableOnInvalid": false,
+                  "customClass": "az-font-9"
+                }
+              ]
+            },
+            {
+              "width": 4,
+              "type": "column",
+              "components": [
+                {
+                  "type": "textfield",
+                  "key": "assigneeRequestApprovalLabel",
+                  "input": true,
+                  "label": "Assignee",
+                  "clearOnHide": false,
+                  "hidden": false,
+                  "validate": {},
+                  "disabled": true,
+                  "disableOnInvalid": false,
+                  "customClass": "az-font-10",
+                  "customDefaultValue": "let token = null; const url = form.variables.workflowServiceAddress+'/iknito/rest/user/'+data.assigneeRequestApproval;let xhttp = new XMLHttpRequest();xhttp.onreadystatechange=function(){if(this.readyState === 4 && this.status === 200) {let user = JSON.parse(xhttp.responseText);value = user.label;}};xhttp.open('GET', url, false);  if (token) {xhttp.setRequestHeader('Authorization', token);} else {xhttp.withCredentials = true;}xhttp.send();"
+                }
+              ]
+            },
+            {
+              "width": 4,
+              "type": "column",
+              "components": [
+                {
+                  "type": "number",
+                  "key": "RequestApproval_counter",
+                  "input": true,
+                  "label": "Counter",
+                  "clearOnHide": false,
+                  "persistent": "client-only",
+                  "hidden": true,
+                  "validate": {},
+                  "disableOnInvalid": false
+                }
+              ]
+            },
+            {
+              "width": 2,
+              "type": "column",
+              "components": [
+                {
+                  "type": "number",
+                  "key": "RequestApproval_displayCounter",
+                  "input": true,
+                  "label": "Repetitions",
+                  "clearOnHide": false,
+                  "hidden": false,
+                  "validate": {},
+                  "disabled": true,
+                  "disableOnInvalid": false,
+                  "calculateValue": "if(data.RequestApproval_counter!=null && data.RequestApproval_counter!=0) value = (data.RequestApproval_counter);else value=0;",
+                  "customClass": "az-counter az-font-10"
+                }
+              ]
+            }
+          ],
+          "disableOnInvalid": false
+        },
+        {
+          "type": "radio",
+          "key": "validJournal",
+          "input": true,
+          "label": "Is valid journal?",
+          "clearOnHide": false,
+          "persistent": "client-only",
+          "hidden": false,
+          "validate": {},
+          "values": [
+            { "value": "true", "label": "Yes" },
+            { "value": "false", "label": "No" }
+          ],
+          "disabled": true,
+          "disableOnInvalid": false,
+          "inline": true
+        },
+        {
+          "type": "columns",
+          "key": "buttonsColumns",
+          "input": false,
+          "label": "Columns",
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": {},
+          "columns": [
+            {
+              "width": 2,
+              "type": "column",
+              "components": [
+                {
+                  "type": "textfield",
+                  "key": "assigneeValidateNewJournal",
+                  "input": true,
+                  "label": "Assignee ID",
+                  "clearOnHide": false,
+                  "hidden": true,
+                  "validate": {},
+                  "disabled": true,
+                  "disableOnInvalid": false,
+                  "customClass": "az-font-9"
+                }
+              ]
+            },
+            {
+              "width": 4,
+              "type": "column",
+              "components": [
+                {
+                  "type": "textfield",
+                  "key": "assigneeValidateNewJournalLabel",
+                  "input": true,
+                  "label": "Assignee",
+                  "clearOnHide": false,
+                  "hidden": false,
+                  "validate": {},
+                  "disabled": true,
+                  "disableOnInvalid": false,
+                  "customClass": "az-font-10",
+                  "customDefaultValue": "let token = null; const url = form.variables.workflowServiceAddress+'/iknito/rest/user/'+data.assigneeValidateNewJournal;let xhttp = new XMLHttpRequest();xhttp.onreadystatechange=function(){if(this.readyState === 4 && this.status === 200) {let user = JSON.parse(xhttp.responseText);value = user.label;}};xhttp.open('GET', url, false);  if (token) {xhttp.setRequestHeader('Authorization', token);} else {xhttp.withCredentials = true;}xhttp.send();"
+                }
+              ]
+            },
+            {
+              "width": 4,
+              "type": "column",
+              "components": [
+                {
+                  "type": "number",
+                  "key": "ValidateNewJournal_counter",
+                  "input": true,
+                  "label": "Counter",
+                  "clearOnHide": false,
+                  "persistent": "client-only",
+                  "hidden": true,
+                  "validate": {},
+                  "disableOnInvalid": false
+                }
+              ]
+            },
+            {
+              "width": 2,
+              "type": "column",
+              "components": [
+                {
+                  "type": "number",
+                  "key": "ValidateNewJournal_displayCounter",
+                  "input": true,
+                  "label": "Repetitions",
+                  "clearOnHide": false,
+                  "hidden": false,
+                  "validate": {},
+                  "disabled": true,
+                  "disableOnInvalid": false,
+                  "calculateValue": "if(data.ValidateNewJournal_counter!=null && data.ValidateNewJournal_counter!=0) value = (data.ValidateNewJournal_counter);else value=0;",
+                  "customClass": "az-counter az-font-10"
+                }
+              ]
+            }
+          ],
+          "disableOnInvalid": false
+        }
+      ],
+      "collapsed": false,
+      "reorder": false
+    }
+  ]
+}

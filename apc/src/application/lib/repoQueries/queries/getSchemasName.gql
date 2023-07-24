@@ -1,0 +1,11 @@
+query getSchemasName {
+  schemas {
+    name
+    label {
+      default
+    }
+    description
+    _id
+    isCollection
+  }
+}

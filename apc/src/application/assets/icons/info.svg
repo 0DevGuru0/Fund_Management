@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <title>Info</title>
+  <defs>
+    <path d="M11.93 8.023a2.075 2.075 0 011.915.233c.568.392.907 1.04.907 1.734a.775.775 0 01-.009.114l-1.338 9.045 1.231-.61.693 1.398-3.832 1.898a2.072 2.072 0 01-.805.165 2.105 2.105 0 01-2.1-2.104.78.78 0 01.008-.114l1.338-9.041-1.233.608-.69-1.399 3.847-1.897a.777.777 0 01.069-.03zM12.803 2c1.269 0 2.3 1.032 2.3 2.3 0 1.269-1.031 2.3-2.3 2.3a2.303 2.303 0 01-2.3-2.3c0-1.268 1.032-2.3 2.3-2.3z" id="path-1"/>
+  </defs>
+  <g id="icon/info" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="Combined-Shape" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#21242A">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

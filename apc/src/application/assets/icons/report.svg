@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <title>Report</title>
+  <defs>
+    <path d="M14 1c.043 0 .085.003.126.008L14 1a1 1 0 01.25.031l.03.009c.03.009.061.02.091.031l.027.012a.914.914 0 01.227.137l.082.073 6 6c.03.03.057.06.082.093l-.082-.093a1 1 0 01.21.309l.012.027c.012.03.022.06.031.091l.008.03A.921.921 0 0121 8v12a3 3 0 01-3 3H6a3 3 0 01-3-3V4a3 3 0 013-3zm-1 2H6a1 1 0 00-1 1v16a1 1 0 001 1h12a1 1 0 001-1V9h-5a1 1 0 01-.993-.883L13 8V3zm3 13a1 1 0 010 2H8a1 1 0 010-2zm0-4a1 1 0 010 2H8a1 1 0 010-2zm-6-4a1 1 0 010 2H8a1 1 0 110-2zm5-3.585V7h2.586L15 4.415z" id="path-1"/>
+  </defs>
+  <g id="icon/file-text" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="Combined-Shape" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#21242A">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

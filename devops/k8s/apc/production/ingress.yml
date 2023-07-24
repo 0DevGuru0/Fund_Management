@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iknito-workflow
+spec:
+  rules:
+  - host: smartfund.iknito.com
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: iknito-smartfund
+            port:
+              number: 3000
+      - path: /camunda
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: iknito-camunda
+            port:
+              number: 8080

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iknito-smartfund
+data:
+  NODE_OPTIONS: '--max_old_space_size=2048'
+  OIDC_CLIENT_KEYCLOAK_UNIQUE_ID: 3a755a82-2302-4bc8-b4c2-6db564dba1b8
+  OIDC_CLIENT_ID: smartfund-api
+  OIDC_REALM: ScienceHubNightly
+  OIDC_PROVIDER_ADDRESS: https://accounts.iknito.com/auth/
+  OIDC_ENDPOINT: https://accounts.iknito.com/auth/realms/ScienceHubNightly
+  FILE_STORAGE_BUCKET: iknito-workflow-nightly
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: iknito-camunda
+data:
+  JWK_PROVIDER_URL: https://accounts.iknito.com/auth/realms/ScienceHubNightly/protocol/openid-connect/certs
+  SPRING_DATASOURCE_URL: jdbc:postgresql://iknito-postgresql.cuh5x3r2vjnz.eu-central-1.rds.amazonaws.com:54325/iknito-camunda-nightly
+  SPRING_DATASOURCE_USERNAME: postgres
+  DB_URL: jdbc:postgresql://iknito-postgresql.cuh5x3r2vjnz.eu-central-1.rds.amazonaws.com:54325/iknito-camunda-nightly
+  DB_USERNAME: postgres

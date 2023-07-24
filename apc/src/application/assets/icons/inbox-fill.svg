@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <title>Inbox Filled</title>
+  <defs>
+    <path d="M16.7 3a3 3 0 012.744 1.784l3.47 7.81.008.019a.993.993 0 01.033.088l-.041-.107A1 1 0 0123 13v5a3 3 0 01-3 3H4a3 3 0 01-3-3v-5l.007-.117.001-.013L1 13a1 1 0 01.078-.387l.008-.019 3.47-7.81A3 3 0 017.3 3h9.4zm0 2H7.3c-.397 0-.755.2-.916.51L3.02 12H8a1 1 0 01.757.346l.075.1L10.535 15h2.93l1.703-2.555A1 1 0 0116 12h4.98l-3.364-6.49c-.16-.31-.52-.51-.916-.51z" id="path-1"/>
+  </defs>
+  <g id="icon/inbox-fill" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="Combined-Shape" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#21242A">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

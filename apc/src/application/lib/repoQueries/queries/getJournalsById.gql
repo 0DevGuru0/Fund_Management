@@ -1,0 +1,10 @@
+query getJournalsById($ids: [ObjectId!]!) {
+  getItems(ids: $ids) {
+    _id
+    ... on Journal {
+      publisher {
+        title
+      }
+    }
+  }
+}

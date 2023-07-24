@@ -1,0 +1,8 @@
+query getSubjectsName($query: JSON!, $limit: Int!, $offset: Int!, $sort: JSON) {
+  search(query: $query, offset: $offset, limit: $limit, sort: $sort) {
+    items {
+      id: _id
+      title
+    }
+  }
+}

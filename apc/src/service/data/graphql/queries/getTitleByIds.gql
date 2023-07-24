@@ -1,0 +1,6 @@
+query getTitleByIds($ids: [ObjectId!]!) {
+  getItems(ids: $ids) {
+    id: _id
+    title
+  }
+}

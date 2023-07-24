@@ -1,0 +1,219 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["filterJson"]
+  binaryTargets = ["native", "linux-musl"]
+  output = "../../node_modules/.prisma/backend-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Migration {
+  id     Int      @id @default(autoincrement())
+  name   String   @db.VarChar(255)
+  run_on DateTime @db.Timestamp(6)
+
+  @@map("_Migration")
+}
+
+// The following data models are defined in repository:
+// Journal
+// Organization (Fund, Publisher, Institute)
+
+model FundApplication {
+  id                Int      @id @default(autoincrement())
+  articleTitle      String
+  articleFile       Json     // { image: String, mimeType: String, fileName: String }
+  userId            String   // Camunda username
+  policyId          String   @db.Uuid
+  processInstanceId String   @db.Uuid @unique // Camunda
+  fundId            String   // [ObjectID] Repository Organization (type = fund)
+  publisherId       String   // [ObjectID] Repository Publisher
+  journalId         String   // [ObjectID] Repository Journal
+  affiliationId     String   // [ObjectID] Repository Organization (type = inistitution)
+  publishPrice      BigInt?
+  currency          String?
+  createdAt         DateTime @default(now())
+  variables         Json @default("{}")
+  state             String @default("STARTED")
+
+  policy            Policy   @relation(fields: [policyId], references: [id])
+  voucher           Voucher?
+  budgetAllocation  BudgetAllocation?
+
+  @@map(name: "fund_applications")
+  @@index([variables], name: "ginidx_variables")
+}
+
+model Policy {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type              PolicyType
+  title             String
+  fundId            String    // [ObjectID] Repository Organization (type = fund)
+  terms             String
+  isActive          Boolean   @default(true)
+  note              String
+  createdBy         String    // Camunda username
+  createdAt         DateTime  @default(now())
+
+  fundApplications  FundApplication[]
+
+  // Who we want to fund
+  publisherId       String?   // [ObjectID] Repository Publisher, Restricts Policy Journal Groups to a Single Publisher
+  journalGroups     JournalGroupsOfPolicy[]
+
+  // How we want to fund
+  vouchers          Voucher[]
+  budgetAllocation  BudgetAllocation[]
+
+  @@map(name: "policies")
+}
+
+model JournalGroup {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title             String
+  fundId            String   // [ObjectID] Repository Organization (type = fund)
+  publisherId       String   // [ObjectID] Repository Publisher
+  journalsCount     Int
+  createdBy         String    // Camunda username
+  createdAt         DateTime  @default(now())
+
+  policies          JournalGroupsOfPolicy[]
+  journals          JournalsOfJournalGroup[]
+
+  @@map(name: "journal_groups")
+}
+
+model JournalsOfJournalGroup {
+  journalGroupId    String    @db.Uuid
+  journalId         String    // [ObjectID] Repository Journal
+  batchId           String    @db.Uuid
+  assignedBy        String    // Camunda username
+  assignedAt        DateTime  @default(now())
+
+  journalGroup      JournalGroup @relation(fields: [journalGroupId], references: [id])
+
+  @@id([journalGroupId, journalId])
+  @@map(name: "journals_of_journal_groups")
+}
+
+model JournalGroupsOfPolicy {
+  policyId        String        @db.Uuid
+  journalGroupId  String        @db.Uuid
+  assignedBy      String        // Camunda username
+  assignedAt      DateTime      @default(now())
+
+  policy          Policy        @relation(fields: [policyId], references: [id])
+  journalGroup    JournalGroup  @relation(fields: [journalGroupId], references: [id])
+
+  @@id([policyId, journalGroupId])
+  @@map(name: "journal_groups_of_policies")
+}
+
+model Voucher {
+  id                  String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status              VoucherStatus
+  code                String
+  policyId            String            @db.Uuid
+  publisherId         String            // [ObjectID] Repository Publisher
+  usableAfter         DateTime?
+  expiresAt           DateTime?
+  allocatedAt         DateTime?
+  lastReservedAt      DateTime?
+  batchId             String            @db.Uuid
+  note                String?
+  createdAt           DateTime          @default(now())
+  fundApplicationId   Int?              @unique
+
+  policy              Policy            @relation(fields: [policyId], references: [id])
+  fundApplication     FundApplication?  @relation(fields: [fundApplicationId], references: [id])
+
+  @@unique([code, publisherId])
+  @@map(name: "vouchers")
+}
+
+model BudgetAllocation {
+  id                  String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status              BudgetAllocationStatus
+  policyId            String            @db.Uuid
+  originalAmount      BigInt
+  acceptedAmount      BigInt?
+  currency            String
+  paymentRecordId     String?           @db.Uuid @unique
+  fundApplicationId   Int               @unique
+  note                String?
+  createdAt           DateTime          @default(now())
+
+  policy              Policy            @relation(fields: [policyId], references: [id])
+  paymentRecord       PaymentRecord?    @relation(fields: [paymentRecordId], references: [id])
+  fundApplication     FundApplication   @relation(fields: [fundApplicationId], references: [id])
+
+  @@map(name: "budget_allocations")
+}
+
+model PaymentRecord {
+  id                  String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amount              BigInt
+  currency            String
+  receipt             Json              // { image: String, mimeType: String, fileName: String }
+  accountDetails      Json
+  trackingCode        String
+  note                String?
+  paidBy              String            // Camunda username
+  paidAt              DateTime
+  createdAt           DateTime          @default(now())
+
+  budgetAllocation    BudgetAllocation?
+
+  @@map(name: "payment_records")
+}
+
+model MessageTemplate {
+  id                  String            @id
+  body                String
+  channels            Json
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt @default(now())
+
+  @@map(name: "message_templates")
+}
+
+model BatchDetails {
+  batchId             String            @id @db.Uuid
+  operator            String
+
+  @@map(name: "batch_details")
+}
+
+enum VoucherStatus {
+  AVAILABLE
+  RESERVED
+  ALLOCATED
+  SUSPENDED
+}
+
+enum BudgetAllocationStatus {
+  RESERVED
+  ALLOCATED
+  CANCELLED
+}
+
+enum PolicyType {
+  VOUCHER
+  INVOICE
+  MANUAL
+}
+
+model UserMD {
+  username            String            @id
+  password            String
+  @@map(name: "user_md")
+}
+
+model KeyValueMD {
+  key                 String            @id
+  value               String
+  @@map(name: "keyvalue_md")
+}

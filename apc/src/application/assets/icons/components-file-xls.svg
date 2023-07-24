@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="36" viewBox="0 0 30 36">
+    <defs>
+        <filter id="n4ob0t1eva" width="109%" height="117.6%" x="-4.5%" y="-8.8%" filterUnits="objectBoundingBox">
+            <feOffset in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="12"/>
+            <feColorMatrix in="shadowBlurOuter1" result="shadowMatrixOuter1" values="0 0 0 0 0.75640012 0 0 0 0 0.804524735 0 0 0 0 0.86639924 0 0 0 0.303936298 0"/>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        <filter id="knu30804pc" width="133.3%" height="133.3%" x="-16.7%" y="-25%" filterUnits="objectBoundingBox">
+            <feOffset dy="-1" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation=".5"/>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.0909637238 0"/>
+        </filter>
+        <linearGradient id="o9zhd1h59b" x1="50%" x2="50%" y1="0%" y2="100%">
+            <stop offset="0%" stop-color="#1ABF74"/>
+            <stop offset="100%" stop-color="#009F57"/>
+        </linearGradient>
+        <path id="np2625zjyd" d="M18 0h7.588C27.908 0 30 2.093 30 4.412V12L18 0z"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <g>
+            <g filter="url(#n4ob0t1eva)" transform="translate(-815.000000, -551.000000) translate(448.000000, 183.000000)">
+                <g>
+                    <g>
+                        <g>
+                            <g>
+                                <path fill="url(#o9zhd1h59b)" d="M18 0l12 12v19.8c0 2.32-1.88 4.2-4.2 4.2H4.2C1.88 36 0 34.12 0 31.8V4.2C0 1.88 1.88 0 4.2 0H18z" transform="translate(343.000000, 168.000000) translate(0.000000, 120.000000) translate(0.000000, 56.000000) translate(24.000000, 24.000000)"/>
+                                <g transform="translate(343.000000, 168.000000) translate(0.000000, 120.000000) translate(0.000000, 56.000000) translate(24.000000, 24.000000) translate(24.000000, 6.000000) scale(-1, -1) translate(-24.000000, -6.000000)">
+                                    <use fill="#000" filter="url(#knu30804pc)" xlink:href="#np2625zjyd"/>
+                                    <use fill="#FFF" fill-opacity=".4" xlink:href="#np2625zjyd"/>
+                                </g>
+                                <path fill="#FFF" fill-rule="nonzero" d="M16.79 18.004v.008l.003.001v10.786H6.005v-.9h.002v-2.716h-.003v-.898h.003v-2.717h-.003v-.898h.003v-1.768l-.003.001v-.899H16.79zm-7.175 7.18h-2.71v2.715h2.71v-2.716zm2.678 0h-1.78v2.715h1.78v-2.716zm3.6 0h-2.702v2.715h2.703v-2.716zm-6.278-3.616h-2.71v2.716h2.71v-2.716zm2.678 0h-1.78v2.716h1.78v-2.716zm3.6 0h-2.702v2.716h2.703v-2.716zm0-2.666H6.907v1.767h8.988v-1.767z" transform="translate(343.000000, 168.000000) translate(0.000000, 120.000000) translate(0.000000, 56.000000) translate(24.000000, 24.000000)"/>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

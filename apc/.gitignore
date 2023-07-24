@@ -1,0 +1,44 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+/downloads
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+build
+/storybook-build/
+build-storybook.log
+tsconfig.tsbuildinfo
+
+# generated
+/src/application/lib/generated
+/src/service/generated/repoGqlTypes.ts
+/src/service/generated/wfCamunda.ts
+# TODO: the wfService generated types will be commited to the repo for now
+
+# TODO: the apcApi generated types will be commited to the repo for now
+!/src/application/lib/generated/apcApi*
+
+# misc
+.DS_Store
+.env*.local
+xeno
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# msw
+mockServiceWorker.js
+
+schema.graphql
+
+.vercel

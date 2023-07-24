@@ -1,0 +1,111 @@
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: SourceSansPro, Helvetica, 'Times New Roman', Times, serif;
+    }
+
+    .container {
+      position: relative;
+      width: 600px;
+      margin: 0 auto;
+      margin-top: 60px;
+    }
+
+    .logoContainer {
+      margin-bottom: 36px;
+      text-align: center;
+    }
+
+    .logoContainer > img {
+      height: 54px;
+    }
+
+    .detailsContainer {
+      text-align: center;
+      width: 600px;
+      background-color: #f7fafe;
+      border-radius: 12px;
+      padding: 48px 36px;
+      box-sizing: border-box;
+    }
+
+    #details-img-container {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      display: inline-block;
+      margin-bottom: 24px;
+    }
+
+    #check-round-container {
+      position: absolute;
+      bottom: -6px;
+      right: -6px;
+      padding: 1px;
+      border: solid 2px;
+      background-color: #fff;
+      border-color: #1ab297;
+      border-radius: 50%;
+    }
+
+    .textContainer {
+      padding: 0 48px;
+      text-align: left;
+      line-height: 1.5;
+    }
+
+    #text-body {
+      font-family: SourceSansPro, Helvetica, 'Times New Roman', Times, serif !important;
+      font-size: 16px;
+      color: #738297;
+      white-space: pre-wrap;       /* Since CSS 2.1 */
+      white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+      white-space: -pre-wrap;      /* Opera 4-6 */
+      white-space: -o-pre-wrap;    /* Opera 7 */
+      word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    }
+
+    #separation-line {
+      display: inline-block;
+      height: 0;
+      width: 100%;
+      border-top: 1px solid #e3ebf7;
+      margin: 0 -20px;
+      margin-bottom: 36px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="logoContainer">
+      <img src="{{frontendServerAddress}}/iKnitoLogoEmail.png" alt="iknito-logo">
+    </div>
+    <div class="detailsContainer">
+      <div id="details-img-container">
+        <img style="width: inherit; height: inherit;" src="{{frontendServerAddress}}/emailAvatarPlaceholder.png">
+        <!-- TODO: Poisitioning This is tick Almost Impossible in the Mail Clients!! -->
+        <!-- <div id="check-round-container">
+          <img style="width: 24px; height: 24px;" src="{{frontendServerAddress}}/emailAvatarPlaceholder.png">
+        </div> -->
+      </div>
+      <div class="textContainer">
+        <div>
+          <h2>{{{title}}}</h2>
+        </div>
+        <div style="margin-bottom: 36px;">
+          <pre id="text-body">{{{body}}}</pre>
+        </div>
+      </div>
+      <div id="separation-line"></div>
+      <div style="font-size: 16px;">
+        <span style="color: #a1b1c7;">Have Questions? Email us at </span>
+        <span style="color: #03b9ff;">{{feedbackEmail}}</span>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

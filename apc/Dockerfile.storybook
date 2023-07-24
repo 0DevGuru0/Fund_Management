@@ -1,0 +1,40 @@
+FROM node:14.15.4-alpine as build
+
+RUN apk update && \
+    apk add --no-cache git
+    # python make g++ curl
+RUN npm i -g npm
+
+RUN mkdir /app
+ENV NODE_ENV=build
+
+# install dependencies
+COPY package.json package-lock.json /app/
+
+WORKDIR /app
+RUN npm install
+
+ENV NODE_ENV=production
+
+# build the app using developement dependencies
+# looks like "babel.config.js" that is inteded for next.js helps storybook to compile preview.tsx :))
+COPY mergeWebpackConfig.js babel.config.js /app/
+COPY tsconfig.json /app/
+COPY .storybook /app/.storybook
+COPY typings /app/typings
+COPY public /app/public
+COPY src /app/src
+
+# build time arguments
+
+# https://iknito.atlassian.net/browse/LE-137?atlOrigin=eyJpIjoiODBjMTJmNjM4YWEwNGU3NzgwYzhjNzQyMzMxMjc4MjgiLCJwIjoiaiJ9
+# ARG DRONE_COMMIT_SHA
+# ARG DRONE_COMMIT_MESSAGE
+# ARG DRONE_BUILD_STARTED
+
+RUN npm run build:storybook
+
+FROM nginx:1.18.0-alpine
+
+COPY --chown=nginx:nginx --from=build /app/.storybook/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=nginx:nginx --from=build /app/storybook-build /app/current

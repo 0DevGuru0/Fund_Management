@@ -1,0 +1,5 @@
+mutation updateJournals($items: [UpdateJournals_JournalItems!]!) {
+  updateJournals(items: $items) {
+    _id
+  }
+}

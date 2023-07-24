@@ -1,0 +1,31 @@
+version: '3.8'
+
+volumes:
+  pg_data:
+  minio_data:
+
+services:
+  minio:
+    logging:
+      driver: none
+    volumes:
+      - minio_data:/var/lib/minio/data
+    ports:
+      - 9000:9000
+
+  postgres:
+    # uncomment next line if you want all Postgres query logs
+    # command: ["postgres", "-c", "log_statement=all"]
+    volumes:
+      - pg_data:/var/lib/postgresql/data/pgdata
+    ports:
+      # TODO: we don't use 127.0.0.1 as we couldn't find a way to make it work in GitPod
+      - 5438:5432
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+  camunda:
+    logging:
+      driver: none
+    ports:
+      # TODO: we don't use 127.0.0.1 as we couldn't find a way to make it work in GitPod
+      - 8080:8080

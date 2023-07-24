@@ -1,0 +1,833 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0fy1cvg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.3">
+  <bpmn:collaboration id="Collaboration_051euyh">
+    <bpmn:participant id="Participant_APC" name="Article Processing Charge" processRef="ArticleProcessingCharge" />
+  </bpmn:collaboration>
+  <bpmn:process id="ArticleProcessingCharge" name="Article Processing Charge" isExecutable="true" camunda:candidateStarterGroups="Researcher">
+    <bpmn:laneSet id="LaneSet_1gaegt6">
+      <bpmn:lane id="Lane_0hnbadn" name="Back office agent">
+        <bpmn:flowNodeRef>Gateway_1kfwx43</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>AllocateVoucher</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ReleaseVoucher2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>RequestApproval</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1qtxrzo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1meqq8f</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1seud4t</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1okdhmu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0x3gj25</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ValidateNewJournal</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1mx6kme</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1jdeive</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1pgosp2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0dmd9io</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0rlsjir</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0ldhqys" name="Researcher">
+        <bpmn:flowNodeRef>UpdateStatus</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Remind2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Remind1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1arbq4f</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ReleaseVoucher</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0h83jte</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ReserveVoucher</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_15tjtkc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0y3wdss</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_05hcdkp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1b73nzr</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="Flow_1nqzbza" sourceRef="Start" targetRef="Gateway_15tjtkc" />
+    <bpmn:userTask id="UpdateStatus" name="Update Status" camunda:assignee="${starter}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="acceptanceFiles" label="File(s)" type="file">
+            <camunda:properties>
+              <camunda:property id="multiple" value="true" />
+              <camunda:property id="filePattern" value=".pdf,.jpg,.png" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="comments" label="Comments" type="text" />
+        </camunda:formData>
+        <camunda:taskListener event="create">
+          <camunda:script scriptFormat="groovy">task.setDescription("Publisher: "+publisher.label+", Journal: "+journal.label+", Price: "+price )</camunda:script>
+        </camunda:taskListener>
+        <camunda:properties>
+          <camunda:property name="submitLabel" value="Submit" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1efvae1</bpmn:incoming>
+      <bpmn:incoming>Flow_11lb115</bpmn:incoming>
+      <bpmn:outgoing>Flow_14bt4pv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1kfwx43" name="Evaluation result">
+      <bpmn:incoming>Flow_0u9dst9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="AllocateVoucher" name="Allocate Voucher">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">${rwsService.endpoint}+"/voucher/allocate"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">basicToken</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="groovy">def postData = [:];
+postData.voucherId = voucherId;
+S(postData, org.camunda.spin.DataFormats.json()).toString();</camunda:script>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0binytw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ReleaseVoucher2" name="Release Voucher">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">${rwsService.endpoint}+"/voucher/release"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">basicToken</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="groovy">def postData = [:];
+postData.voucherId = voucherId;
+S(postData, org.camunda.spin.DataFormats.json()).toString();</camunda:script>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mrqur9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="RequestApproval" name="Request Approval" camunda:candidateGroups="BackOffice">
+      <bpmn:extensionElements>
+        <camunda:taskListener event="create">
+          <camunda:script scriptFormat="groovy">task.setDescription("Publisher: "+publisher.label+", Journal: "+journal.label+", Price: "+price )</camunda:script>
+        </camunda:taskListener>
+        <camunda:properties>
+          <camunda:property name="submitLabel" value="Submit" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_14bt4pv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0u9dst9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_1qtxrzo" name="Send Article Acceptance Mail">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
+            <camunda:inputParameter name="subject">Article Acceptance</camunda:inputParameter>
+            <camunda:inputParameter name="text">
+              <camunda:script scriptFormat="freemarker">Dear Applicant,
+
+Congratulations!
+Thank you for applying for costs waivers for publishing your article in an Open Access Journal.
+Your voucher has been generated with number ${voucherId}.
+
+Management Team</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="from">no-reply@iknito.com</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>mail-send</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0binytw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dpncp3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_1meqq8f">
+      <bpmn:incoming>Flow_1dpncp3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_1seud4t">
+      <bpmn:incoming>Flow_19s61dm</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_1okdhmu" name="Send Article Rejection Mail">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
+            <camunda:inputParameter name="subject">Article Rejection</camunda:inputParameter>
+            <camunda:inputParameter name="text">
+              <camunda:script scriptFormat="freemarker">Dear Applicant, 
+Thank you for applying for costs waivers for publishing your article in an Open Access Journal.
+Your article is rejected to be processed according to:
+
+${reasonEvaluation}
+
+Management Team
+
+
+</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="from">no-reply@iknito.com</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>mail-send</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0mrqur9</bpmn:incoming>
+      <bpmn:outgoing>Flow_19s61dm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Remind2" name="Remind 2">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
+            <camunda:inputParameter name="subject">Article Acceptance</camunda:inputParameter>
+            <camunda:inputParameter name="text">
+              <camunda:script scriptFormat="freemarker">Dear Applicant,
+Thank you for applying to Article Processing Charge,
+Your voucher has been generated with Voucher number ${voucherId}.
+Kindly be notified that to release this voucher you should update your article status and upload the
+required documents for acceptance.
+Thank you so much.</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="from">no-reply@iknito.com</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>mail-send</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1rl8dja</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Remind1" name="Remind 1">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
+            <camunda:inputParameter name="subject">Article Acceptance</camunda:inputParameter>
+            <camunda:inputParameter name="text">
+              <camunda:script scriptFormat="freemarker">Dear Applicant,
+Thank you for applying to Article Processing Charge,
+Your voucher has been generated with Voucher number ${voucherId}.
+Kindly be notified that to release this voucher you should update your article status and upload the
+required documents for acceptance.
+Thank you so much.</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="from">no-reply@iknito.com</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>mail-send</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0p8vdz1</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1arbq4f" name="Send Voucher Release Mail">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
+            <camunda:inputParameter name="subject">Article Acceptance</camunda:inputParameter>
+            <camunda:inputParameter name="text">
+              <camunda:script scriptFormat="freemarker">Dear Applicant,
+
+Your voucher with number ${voucherId} for article “${articleTitle}” has been released.
+
+Management Team
+</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="from">no-reply@iknito.com</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>mail-send</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03s952e</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m6dlb2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ReleaseVoucher" name="Release Voucher">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">${rwsService.endpoint}+"/voucher/release"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">basicToken</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="groovy">def postData = [:];
+postData.voucherId = voucherId;
+S(postData, org.camunda.spin.DataFormats.json()).toString();</camunda:script>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qst3wh</bpmn:incoming>
+      <bpmn:outgoing>Flow_03s952e</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_0h83jte">
+      <bpmn:incoming>Flow_1m6dlb2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="ReserveVoucher" name="Reserve Voucher">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">${rwsService.endpoint}+"/voucher/reserve"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">basicToken</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="groovy">def postData = [:];
+println execution.id;
+postData.executionId = execution.id;
+postData.publisher = publisher.id;
+postData.price = price;
+postData.userId = currentUser.email;
+
+S(postData, org.camunda.spin.DataFormats.json()).toString();</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="voucherId">
+              <camunda:script scriptFormat="groovy">if (statusCode != 200) {
+throw new Exception(response.toString())
+}else{
+S(response,org.camunda.spin.DataFormats.json()).mapTo("java.util.HashMap").generatedId;}</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1pfyfxt</bpmn:incoming>
+      <bpmn:incoming>Flow_09egs86</bpmn:incoming>
+      <bpmn:outgoing>Flow_1efvae1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_0y3wdss" cancelActivity="false" attachedToRef="UpdateStatus">
+      <bpmn:outgoing>Flow_1rl8dja</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_16o99yl">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT120M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_05hcdkp" cancelActivity="false" attachedToRef="UpdateStatus">
+      <bpmn:outgoing>Flow_0p8vdz1</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_04v04d9">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT60M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="Event_1b73nzr" attachedToRef="UpdateStatus">
+      <bpmn:outgoing>Flow_1qst3wh</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1hm75d7">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT180M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1efvae1" sourceRef="ReserveVoucher" targetRef="UpdateStatus" />
+    <bpmn:sequenceFlow id="Flow_11lb115" sourceRef="Activity_0x3gj25" targetRef="UpdateStatus" />
+    <bpmn:sequenceFlow id="Flow_14bt4pv" sourceRef="UpdateStatus" targetRef="RequestApproval" />
+    <bpmn:sequenceFlow id="Flow_0u9dst9" sourceRef="RequestApproval" targetRef="Gateway_1kfwx43" />
+    <bpmn:sequenceFlow id="Flow_1" name="Approved" sourceRef="Gateway_1kfwx43" targetRef="AllocateVoucher">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluation=='approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_2" name="Rejected: Need to complete" sourceRef="Gateway_1kfwx43" targetRef="Activity_0x3gj25">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluation=='rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_3" name="Rejected: Invalid documents" sourceRef="Gateway_1kfwx43" targetRef="ReleaseVoucher2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${evaluation=='invalid'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0binytw" sourceRef="AllocateVoucher" targetRef="Activity_1qtxrzo" />
+    <bpmn:sequenceFlow id="Flow_0mrqur9" sourceRef="ReleaseVoucher2" targetRef="Activity_1okdhmu" />
+    <bpmn:sequenceFlow id="Flow_1dpncp3" sourceRef="Activity_1qtxrzo" targetRef="Event_1meqq8f" />
+    <bpmn:sequenceFlow id="Flow_19s61dm" sourceRef="Activity_1okdhmu" targetRef="Event_1seud4t" />
+    <bpmn:sequenceFlow id="Flow_1rl8dja" sourceRef="Event_0y3wdss" targetRef="Remind2" />
+    <bpmn:sequenceFlow id="Flow_0p8vdz1" sourceRef="Event_05hcdkp" targetRef="Remind1" />
+    <bpmn:sequenceFlow id="Flow_03s952e" sourceRef="ReleaseVoucher" targetRef="Activity_1arbq4f" />
+    <bpmn:sequenceFlow id="Flow_1m6dlb2" sourceRef="Activity_1arbq4f" targetRef="Event_0h83jte" />
+    <bpmn:sequenceFlow id="Flow_1qst3wh" sourceRef="Event_1b73nzr" targetRef="ReleaseVoucher" />
+    <bpmn:sequenceFlow id="Flow_1pfyfxt" sourceRef="Gateway_15tjtkc" targetRef="ReserveVoucher">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!notListed}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_0x3gj25" name="Send need to complete eMail">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
+            <camunda:inputParameter name="subject">Need to complete</camunda:inputParameter>
+            <camunda:inputParameter name="text">
+              <camunda:script scriptFormat="freemarker">Dear Applicant, 
+Your document submission for article “${articleTitle}” need to be updated based on the below comments:
+
+${reasonEvaluation}
+
+Management Team</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="from">no-reply@iknito.com</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>mail-send</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_11lb115</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_15tjtkc" name="Does the journal already exist?">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property name="manual" value="true" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1nqzbza</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pfyfxt</bpmn:outgoing>
+      <bpmn:outgoing>Flow_005d6lb</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_005d6lb" sourceRef="Gateway_15tjtkc" targetRef="ValidateNewJournal">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${notListed}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:startEvent id="Start" name="Submit Request" camunda:initiator="starter">
+      <bpmn:extensionElements>
+        <camunda:formData businessKey="fullname">
+          <camunda:formField id="dividerJournal" label="Journal" type="divider" />
+          <camunda:formField id="publisher" label="Publisher" type="select">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="journal" label="Journal" type="select">
+            <camunda:properties>
+              <camunda:property id="url" value="https://sftest.iknito.com/apc-1.0/api/journal/search?pub={{data.publisher.id}}&#38;limit={{ limit }}&#38;skip={{ skip }}" />
+              <camunda:property id="refreshOn" value="publisher" />
+              <camunda:property id="dynamic" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="notListed" label="Not listed" type="check">
+            <camunda:properties>
+              <camunda:property id="span" value="12" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="newJournalName" label="Journal Name" type="string">
+            <camunda:properties>
+              <camunda:property id="show" value="notListed" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="newJournalIssn" label="ISSN" type="string">
+            <camunda:properties>
+              <camunda:property id="show" value="notListed" />
+              <camunda:property id="mask" value="9999-999*" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" />
+              <camunda:constraint name="regex" config="\d{4}-\d{3}(\d|x|X)" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="price" label="Price" type="long">
+            <camunda:validation>
+              <camunda:constraint name="min" config="10" />
+              <camunda:constraint name="max" config="20000" />
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="currency" label="Currency" type="select" />
+          <camunda:formField id="dividerArticle" label="Article" type="divider" />
+          <camunda:formField id="articleTitle" label="Article Title" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="articleFiles" label="File(s)" type="file">
+            <camunda:properties>
+              <camunda:property id="multiple" value="true" />
+              <camunda:property id="filePattern" value=".pdf" />
+            </camunda:properties>
+            <camunda:validation>
+              <camunda:constraint name="required" config="true" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="firstName" label="First Name" type="string">
+            <camunda:properties>
+              <camunda:property id="hidden" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="lastName" label="Last Name" type="string">
+            <camunda:properties>
+              <camunda:property id="hidden" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="affiliation" label="Affiliation" type="string" />
+          <camunda:formField id="orcid" label="ORCID" type="string" />
+          <camunda:formField id="sciArea" label="Subject Area" type="select" />
+          <camunda:formField id="sciCategory" label="Subject Category" type="select">
+            <camunda:properties>
+              <camunda:property id="custom" value="var token = null; var url = window.location.origin + &#39;/&#39;+window.location.pathname.split(&#39;/&#39;)[1]+&#39;/data/sciCategory.json&#39;; var xhttp = new XMLHttpRequest(); xhttp.onreadystatechange = function () { if (this.readyState == 4 &#38;&#38; this.status == 200) { data.category = null; var items = JSON.parse(xhttp.responseText); var ret = []; if (data.sciArea !== null) { for (i = 0; i &#60; items.length; i++) { if (items[i].area == data.sciArea.id){ ret.push(items[i]); } } values = ret; } } }; xhttp.open(&#39;GET&#39;, url, false); if (token) { xhttp.setRequestHeader(&#39;Authorization&#39;, token);} else { xhttp.withCredentials = true; } xhttp.send();" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="fullname" label="Name" type="string">
+            <camunda:properties>
+              <camunda:property id="calculateValue" value="value=data.firstName+&#39; &#39;+data.lastName" />
+              <camunda:property id="hidden" value="true" />
+              <camunda:property id="refreshOn" value="data" />
+            </camunda:properties>
+          </camunda:formField>
+          <camunda:formField id="email" label="email" type="string">
+            <camunda:properties>
+              <camunda:property id="hidden" value="true" />
+            </camunda:properties>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:properties>
+          <camunda:property name="columns" value="2" />
+          <camunda:property name="submitLabel" value="Submit" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1nqzbza</bpmn:outgoing>
+      <bpmn:outgoing>Flow_167yhl6</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ValidateNewJournal" name="Validate New Journal" camunda:candidateGroups="BackOffice">
+      <bpmn:incoming>Flow_005d6lb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1kcftgc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1kcftgc" sourceRef="ValidateNewJournal" targetRef="Gateway_1mx6kme" />
+    <bpmn:exclusiveGateway id="Gateway_1mx6kme" name="Is valid journal?">
+      <bpmn:incoming>Flow_1kcftgc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mr9cf0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ou73re</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Activity_1jdeive" name="Send Article Rejection Mail">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="to">${email}</camunda:inputParameter>
+            <camunda:inputParameter name="subject">Invalid Journal</camunda:inputParameter>
+            <camunda:inputParameter name="text">
+              <camunda:script scriptFormat="freemarker">Dear Applicant, 
+Thank you for applying for costs waivers for publishing your article in an Open Access Journal.
+Your article is rejected to be processed according to:
+
+${reasonValidJournal}
+
+Management Team
+</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="from">no-reply@iknito.com</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>mail-send</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ou73re</bpmn:incoming>
+      <bpmn:outgoing>Flow_0brcspu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0mr9cf0" name="Yes" sourceRef="Gateway_1mx6kme" targetRef="Activity_0rlsjir">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${validJournal}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ou73re" name="No" sourceRef="Gateway_1mx6kme" targetRef="Activity_1jdeive">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!validJournal}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0brcspu" sourceRef="Activity_1jdeive" targetRef="Event_0dmd9io" />
+    <bpmn:serviceTask id="Activity_1pgosp2" name="New Process Started" implementation="##WebService">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="to">sfinfo@iknito.com</camunda:inputParameter>
+            <camunda:inputParameter name="subject">New Process Started</camunda:inputParameter>
+            <camunda:inputParameter name="text">
+              <camunda:script scriptFormat="freemarker">Dear Back office agent,
+
+A new process started.
+[Please complete the template...]</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="from">no-reply@iknito.com</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>mail-send</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_167yhl6</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_167yhl6" sourceRef="Start" targetRef="Activity_1pgosp2" />
+    <bpmn:endEvent id="Event_0dmd9io">
+      <bpmn:incoming>Flow_0brcspu</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_0rlsjir" name="Add New Journal to Database">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">
+              <camunda:script scriptFormat="groovy">${rwsService.endpoint}+"/journal"</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Authorization">basicToken</camunda:entry>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="groovy">def postData = [:];
+postData.publisher = publisher.id;
+postData.journalName = newJournalName;
+postData.journalIssn = newJournalIssn;
+
+S(postData, org.camunda.spin.DataFormats.json()).toString();</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="journal">
+              <camunda:script scriptFormat="groovy">if (statusCode != 200) {
+throw new Exception(response.toString())
+}else{
+S(response,org.camunda.spin.DataFormats.json()).mapTo("java.util.HashMap").entity;}</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0mr9cf0</bpmn:incoming>
+      <bpmn:outgoing>Flow_09egs86</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_09egs86" sourceRef="Activity_0rlsjir" targetRef="ReserveVoucher" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_051euyh">
+      <bpmndi:BPMNShape id="Participant_1yuskmc_di" bpmnElement="Participant_APC" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="1258" height="708" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0ldhqys_di" bpmnElement="Lane_0ldhqys" isHorizontal="true">
+        <dc:Bounds x="190" y="100" width="1228" height="290" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0hnbadn_di" bpmnElement="Lane_0hnbadn" isHorizontal="true">
+        <dc:Bounds x="190" y="390" width="1228" height="418" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_09egs86_di" bpmnElement="Flow_09egs86">
+        <di:waypoint x="510" y="440" />
+        <di:waypoint x="510" y="320" />
+        <di:waypoint x="570" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_167yhl6_di" bpmnElement="Flow_167yhl6">
+        <di:waypoint x="270" y="318" />
+        <di:waypoint x="270" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0brcspu_di" bpmnElement="Flow_0brcspu">
+        <di:waypoint x="560" y="699" />
+        <di:waypoint x="602" y="699" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ou73re_di" bpmnElement="Flow_1ou73re">
+        <di:waypoint x="510" y="615" />
+        <di:waypoint x="510" y="659" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="529" y="621" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mr9cf0_di" bpmnElement="Flow_0mr9cf0">
+        <di:waypoint x="510" y="565" />
+        <di:waypoint x="510" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="520" y="543" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1kcftgc_di" bpmnElement="Flow_1kcftgc">
+        <di:waypoint x="450" y="590" />
+        <di:waypoint x="485" y="590" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_005d6lb_di" bpmnElement="Flow_005d6lb">
+        <di:waypoint x="400" y="325" />
+        <di:waypoint x="400" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pfyfxt_di" bpmnElement="Flow_1pfyfxt">
+        <di:waypoint x="425" y="300" />
+        <di:waypoint x="570" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qst3wh_di" bpmnElement="Flow_1qst3wh">
+        <di:waypoint x="938" y="300" />
+        <di:waypoint x="1070" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1m6dlb2_di" bpmnElement="Flow_1m6dlb2">
+        <di:waypoint x="1310" y="300" />
+        <di:waypoint x="1352" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03s952e_di" bpmnElement="Flow_03s952e">
+        <di:waypoint x="1170" y="300" />
+        <di:waypoint x="1210" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p8vdz1_di" bpmnElement="Flow_0p8vdz1">
+        <di:waypoint x="800" y="242" />
+        <di:waypoint x="800" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rl8dja_di" bpmnElement="Flow_1rl8dja">
+        <di:waypoint x="890" y="242" />
+        <di:waypoint x="890" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19s61dm_di" bpmnElement="Flow_19s61dm">
+        <di:waypoint x="1310" y="610" />
+        <di:waypoint x="1352" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dpncp3_di" bpmnElement="Flow_1dpncp3">
+        <di:waypoint x="1310" y="480" />
+        <di:waypoint x="1352" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mrqur9_di" bpmnElement="Flow_0mrqur9">
+        <di:waypoint x="1170" y="610" />
+        <di:waypoint x="1210" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0binytw_di" bpmnElement="Flow_0binytw">
+        <di:waypoint x="1170" y="480" />
+        <di:waypoint x="1210" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qrxwdc_di" bpmnElement="Flow_3" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="970" y="495" />
+        <di:waypoint x="970" y="610" />
+        <di:waypoint x="1070" y="610" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="982" y="543" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rhpj8v_di" bpmnElement="Flow_2" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="960" y="505" />
+        <di:waypoint x="960" y="560" />
+        <di:waypoint x="690" y="560" />
+        <di:waypoint x="690" y="520" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="786" y="566" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nfaq0q_di" bpmnElement="Flow_1" bioc:stroke="#000" bioc:fill="#fff">
+        <di:waypoint x="985" y="480" />
+        <di:waypoint x="1070" y="480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1007" y="462" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u9dst9_di" bpmnElement="Flow_0u9dst9">
+        <di:waypoint x="890" y="480" />
+        <di:waypoint x="935" y="480" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14bt4pv_di" bpmnElement="Flow_14bt4pv">
+        <di:waypoint x="840" y="340" />
+        <di:waypoint x="840" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11lb115_di" bpmnElement="Flow_11lb115">
+        <di:waypoint x="690" y="440" />
+        <di:waypoint x="690" y="320" />
+        <di:waypoint x="760" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1efvae1_di" bpmnElement="Flow_1efvae1">
+        <di:waypoint x="670" y="300" />
+        <di:waypoint x="760" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nqzbza_di" bpmnElement="Flow_1nqzbza">
+        <di:waypoint x="288" y="300" />
+        <di:waypoint x="375" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1wdytm5_di" bpmnElement="UpdateStatus">
+        <dc:Bounds x="760" y="260" width="160" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1kfwx43_di" bpmnElement="Gateway_1kfwx43" isMarkerVisible="true" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="935" y="455" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="922" y="435" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1chcwv6_di" bpmnElement="AllocateVoucher">
+        <dc:Bounds x="1070" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gs6zqd_di" bpmnElement="ReleaseVoucher2">
+        <dc:Bounds x="1070" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mjyh8l_di" bpmnElement="RequestApproval">
+        <dc:Bounds x="790" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qtxrzo_di" bpmnElement="Activity_1qtxrzo">
+        <dc:Bounds x="1210" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f4ohbh_di" bpmnElement="Event_1meqq8f">
+        <dc:Bounds x="1352" y="462" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0u28dzh_di" bpmnElement="Event_1seud4t">
+        <dc:Bounds x="1352" y="592" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1okdhmu_di" bpmnElement="Activity_1okdhmu">
+        <dc:Bounds x="1210" y="570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ghblap_di" bpmnElement="Remind2">
+        <dc:Bounds x="860" y="120" width="75" height="55" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yywcnf_di" bpmnElement="Remind1">
+        <dc:Bounds x="750" y="120" width="80" height="55" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1arbq4f_di" bpmnElement="Activity_1arbq4f">
+        <dc:Bounds x="1210" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0s54p9q_di" bpmnElement="ReleaseVoucher">
+        <dc:Bounds x="1070" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09k52gd_di" bpmnElement="Event_0h83jte">
+        <dc:Bounds x="1352" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0e4t88n_di" bpmnElement="ReserveVoucher">
+        <dc:Bounds x="570" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0x3gj25_di" bpmnElement="Activity_0x3gj25">
+        <dc:Bounds x="640" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_15tjtkc_di" bpmnElement="Gateway_15tjtkc" isMarkerVisible="true" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="375" y="275" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="361" y="245" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="Start" bioc:stroke="#000" bioc:fill="#fff">
+        <dc:Bounds x="252" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="230" y="258" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0epc7mx_di" bpmnElement="ValidateNewJournal">
+        <dc:Bounds x="350" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1mx6kme_di" bpmnElement="Gateway_1mx6kme" isMarkerVisible="true">
+        <dc:Bounds x="485" y="565" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="541" y="580" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jdeive_di" bpmnElement="Activity_1jdeive">
+        <dc:Bounds x="460" y="659" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pgosp2_di" bpmnElement="Activity_1pgosp2">
+        <dc:Bounds x="220" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0dmd9io_di" bpmnElement="Event_0dmd9io">
+        <dc:Bounds x="602" y="681" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rlsjir_di" bpmnElement="Activity_0rlsjir">
+        <dc:Bounds x="460" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0hpzbpx_di" bpmnElement="Event_1b73nzr">
+        <dc:Bounds x="902" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05hcdkp_di" bpmnElement="Event_05hcdkp">
+        <dc:Bounds x="782" y="242" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0y3wdss_di" bpmnElement="Event_0y3wdss">
+        <dc:Bounds x="872" y="242" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

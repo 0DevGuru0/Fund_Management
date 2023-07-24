@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24">
+  <defs>
+    <path d="M21.527 2.5c.462 0 .864.185 1.133.52.31.386.412.939.29 1.556l-3.052 15.38c-.186.938-.825 1.544-1.627 1.544-.411 0-.832-.161-1.217-.466l-.009-.008-3.5-2.876-2.525-2.076.202-.835 7.072-7.67.061-.079a.668.668 0 0 0 .043-.671.638.638 0 0 0-.867-.287l-12.72 6.633-2.61-.763-.019-.005C1.174 12.07 1.009 11.5 1 11.19c-.008-.31.125-.888 1.113-1.273l18.623-7.256c.273-.107.54-.161.79-.161ZM10.679 17.483l1.908 1.568-1.431 1.345c-.4.376-.857.576-1.322.58l.845-3.493Zm4.129-8.053-4.64 5.033a.66.66 0 0 0-.157.294l-1.377 5.69a2.24 2.24 0 0 1-.482-.818L6.197 13.92l8.61-4.491Z" id="path-1"/>
+  </defs>
+  <g id="icon/telegram-fill" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <mask id="mask-2" fill="#fff">
+      <use xlink:href="#path-1"/>
+    </mask>
+    <use id="Combined-Shape" fill="#000" fill-rule="nonzero" xlink:href="#path-1"/>
+    <g id="Group" mask="url(#mask-2)" fill="#000">
+      <g id="COLOR/-black">
+        <path id="Color/Black" d="M0 0h24v24H0z"/>
+      </g>
+    </g>
+  </g>
+</svg>

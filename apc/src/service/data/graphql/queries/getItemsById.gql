@@ -1,0 +1,8 @@
+query getItemsById($query: JSON!, $limit: Int!, $offset: Int!) {
+  search(query: $query, offset: $offset, limit: $limit) {
+    total
+    items {
+      _id
+    }
+  }
+}

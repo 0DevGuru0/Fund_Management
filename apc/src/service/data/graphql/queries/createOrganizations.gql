@@ -1,0 +1,11 @@
+mutation createOrganizations($items: [CreateOrganizations_OrganizationItems!]!) {
+  createOrganizations(items: $items) {
+    _id
+    title
+    type
+    country
+    description
+    url
+    email
+  }
+}

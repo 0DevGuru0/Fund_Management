@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iknito-camunda
+  labels:
+    app: iknito-camunda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iknito-camunda
+  template:
+    metadata:
+      labels:
+        app: iknito-camunda
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: public.ecr.aws/e7p6x1f3/iknito-camunda:4737c2bf
+        imagePullPolicy: Always
+        name: iknito-camunda
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "250Mi"
+            cpu: "250m"
+          limits:
+            memory: "3Gi"
+            cpu: "1000m"
+        envFrom:
+          - configMapRef:
+              name: iknito-camunda
+        env:
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: iknito-postgres
+              key: CAMUNDA_POSTGRES_PASSWORD
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: iknito-postgres
+              key: CAMUNDA_POSTGRES_PASSWORD
+        volumeMounts:
+        - name: mail-config
+          mountPath: /camunda/conf/mail-config.properties
+          subPath: mail-config.properties
+          readOnly: true
+        ## it will be added to tomcat config
+        # - name: context-path
+        #   mountPath: /camunda/conf/iknito.xml
+        #   subPath: iknito.xml
+
+      volumes:
+        - name: mail-config
+          secret:
+            secretName: mail-config
+        # - name: context-path
+        #   configMap:
+        #     name: context-path
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iknito-smartfund
+  labels:
+    app: iknito-smartfund
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: iknito-smartfund
+  template:
+    metadata:
+      labels:
+        app: iknito-smartfund
+    spec:
+      restartPolicy: Always
+      containers:
+      - image: 575302467300.dkr.ecr.eu-central-1.amazonaws.com/iknito-workflow/smartfund:latest
+        imagePullPolicy: Always
+        name: iknito-smartfund
+        ports:
+        - containerPort: 3000
+        resources: {}
+        envFrom:
+        - configMapRef:
+            name: iknito-smartfund
+        env:
+        - name: REPO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: iknito-repository
+              key: REPO_API_KEY
+        - name: SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: iknito-smtp
+              key: SMTP_USERNAME
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: iknito-smtp
+              key: SMTP_PASSWORD
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: iknito-postgres
+              key: SMARTFUND_POSTGRES_URI
+        - name: CAMUNDA_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: iknito-postgres
+              key: CAMUNDA_POSTGRES_URI
+        - name: OIDC_CLIENT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: iknito-oidc
+              key: OIDC_CLIENT_KEY
+        - name: OIDC_TOKEN_ENCRYPTION_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: iknito-oidc
+              key: OIDC_TOKEN_ENCRYPTION_KEY
+        - name: KEYCLOAK_ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-admin-credentials
+              key: USERNAME
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-admin-credentials
+              key: PASSWORD

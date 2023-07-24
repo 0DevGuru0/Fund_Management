@@ -1,0 +1,13 @@
+query getHelpItems($query: JSON!, $sort: JSON) {
+  search(query: $query, sort: $sort, limit: 1000, offset: 0) {
+    total
+    items {
+      ... on Help {
+        id: _id
+        label: title
+        content
+        tags
+      }
+    }
+  }
+}

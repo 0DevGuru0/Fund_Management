@@ -1,0 +1,43 @@
+{
+  "display": "form",
+  "settings": {
+    "recaptcha": {
+      "isEnabled": "true",
+      "siteKey": "6LcbBlIaAAAAALO-boii_2Kf2Td4xJNxvKx_oZZ3"
+    }
+  },
+  "components": [
+    {
+      "type": "textfield",
+      "key": "executionId",
+      "input": true,
+      "label": "Execution Id",
+      "clearOnHide": false,
+      "persistent": false,
+      "hidden": true,
+      "disabled": true
+    },
+    {
+      "components": [
+        {
+          "type": "radio",
+          "key": "evaluation",
+          "input": true,
+          "label": "Evaluation result",
+          "clearOnHide": false,
+          "hidden": false,
+          "validate": { "required": true },
+          "values": [
+            { "value": "approved", "label": "Approved" },
+            { "value": "rejected", "label": "Rejected: Need to complete" },
+            { "value": "invalid", "label": "Rejected: Invalid documents" }
+          ],
+          "disableOnInvalid": false,
+          "inline": true
+        }
+      ],
+      "collapsed": false,
+      "reorder": false
+    }
+  ]
+}

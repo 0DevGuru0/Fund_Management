@@ -1,0 +1,9 @@
+query getFunders($query: JSON!, $limit: Int!, $offset: Int!) {
+  search(query: $query, offset: $offset, limit: $limit) {
+    total
+    items {
+      id: _id
+      title
+    }
+  }
+}

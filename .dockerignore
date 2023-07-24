@@ -1,0 +1,9 @@
+**/node_modules/
+**/xeno/
+**/dist/
+**/.git/
+**/.env.local
+**/.DS_Store
+**/.cache
+**/*.log
+**/nodemon.json

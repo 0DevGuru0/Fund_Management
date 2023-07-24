@@ -1,0 +1,1231 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["filterJson"]
+  binaryTargets = ["native", "linux-musl"]
+  output = "../../node_modules/.prisma/camunda-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("CAMUNDA_DATABASE_URL")
+}
+
+model Migration {
+  id     Int      @id @default(autoincrement())
+  name   String   @db.VarChar(255)
+  run_on DateTime @db.Timestamp(6)
+
+  @@map("_Migration")
+}
+
+model act_ge_bytearray {
+  id_                String             @id @db.VarChar(64)
+  rev_               Int?
+  name_              String?            @db.VarChar(255)
+  deployment_id_     String?            @db.VarChar(64)
+  bytes_             Bytes?
+  generated_         Boolean?
+  tenant_id_         String?            @db.VarChar(64)
+  type_              Int?
+  create_time_       DateTime?          @db.Timestamp(6)
+  root_proc_inst_id_ String?            @db.VarChar(64)
+  removal_time_      DateTime?          @db.Timestamp(6)
+  act_re_deployment  act_re_deployment? @relation(fields: [deployment_id_], references: [id_])
+  act_ru_ext_task    act_ru_ext_task[]
+  act_ru_job         act_ru_job[]
+  act_ru_variable    act_ru_variable[]
+
+  @@index([deployment_id_], name: "act_idx_bytear_depl")
+  @@index([name_], name: "act_idx_bytearray_name")
+  @@index([removal_time_], name: "act_idx_bytearray_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_bytearray_root_pi")
+}
+
+model act_ge_property {
+  name_  String  @id @db.VarChar(64)
+  value_ String? @db.VarChar(300)
+  rev_   Int?
+}
+
+model act_ge_schema_log {
+  id_        String    @id @db.VarChar(64)
+  timestamp_ DateTime? @db.Timestamp(6)
+  version_   String?   @db.VarChar(255)
+}
+
+model act_hi_actinst {
+  id_                 String    @id @db.VarChar(64)
+  parent_act_inst_id_ String?   @db.VarChar(64)
+  proc_def_key_       String?   @db.VarChar(255)
+  proc_def_id_        String    @db.VarChar(64)
+  root_proc_inst_id_  String?   @db.VarChar(64)
+  proc_inst_id_       String    @db.VarChar(64)
+  execution_id_       String    @db.VarChar(64)
+  act_id_             String    @db.VarChar(255)
+  task_id_            String?   @db.VarChar(64)
+  call_proc_inst_id_  String?   @db.VarChar(64)
+  call_case_inst_id_  String?   @db.VarChar(64)
+  act_name_           String?   @db.VarChar(255)
+  act_type_           String    @db.VarChar(255)
+  assignee_           String?   @db.VarChar(255)
+  start_time_         DateTime  @db.Timestamp(6)
+  end_time_           DateTime? @db.Timestamp(6)
+  duration_           BigInt?
+  act_inst_state_     Int?
+  sequence_counter_   BigInt?
+  tenant_id_          String?   @db.VarChar(64)
+  removal_time_       DateTime? @db.Timestamp(6)
+
+  @@index([execution_id_, act_id_, end_time_, id_], name: "act_idx_hi_act_inst_comp")
+  @@index([end_time_], name: "act_idx_hi_act_inst_end")
+  @@index([proc_def_key_], name: "act_idx_hi_act_inst_proc_def_key")
+  @@index([proc_inst_id_, act_id_], name: "act_idx_hi_act_inst_procinst")
+  @@index([removal_time_], name: "act_idx_hi_act_inst_rm_time")
+  @@index([start_time_, end_time_], name: "act_idx_hi_act_inst_start_end")
+  @@index([proc_def_id_, proc_inst_id_, act_id_, end_time_, act_inst_state_], name: "act_idx_hi_act_inst_stats")
+  @@index([tenant_id_], name: "act_idx_hi_act_inst_tenant_id")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_actinst_root_pi")
+  @@index([proc_def_id_, end_time_], name: "act_idx_hi_ai_pdefid_end_time")
+}
+
+model act_hi_attachment {
+  id_                String    @id @db.VarChar(64)
+  rev_               Int?
+  user_id_           String?   @db.VarChar(255)
+  name_              String?   @db.VarChar(255)
+  description_       String?   @db.VarChar(4000)
+  type_              String?   @db.VarChar(255)
+  task_id_           String?   @db.VarChar(64)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  proc_inst_id_      String?   @db.VarChar(64)
+  url_               String?   @db.VarChar(4000)
+  content_id_        String?   @db.VarChar(64)
+  tenant_id_         String?   @db.VarChar(64)
+  create_time_       DateTime? @db.Timestamp(6)
+  removal_time_      DateTime? @db.Timestamp(6)
+
+  @@index([content_id_], name: "act_idx_hi_attachment_content")
+  @@index([proc_inst_id_], name: "act_idx_hi_attachment_procinst")
+  @@index([removal_time_], name: "act_idx_hi_attachment_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_attachment_root_pi")
+  @@index([task_id_], name: "act_idx_hi_attachment_task")
+}
+
+model act_hi_batch {
+  id_                  String    @id @db.VarChar(64)
+  type_                String?   @db.VarChar(255)
+  total_jobs_          Int?
+  jobs_per_seed_       Int?
+  invocations_per_job_ Int?
+  seed_job_def_id_     String?   @db.VarChar(64)
+  monitor_job_def_id_  String?   @db.VarChar(64)
+  batch_job_def_id_    String?   @db.VarChar(64)
+  tenant_id_           String?   @db.VarChar(64)
+  create_user_id_      String?   @db.VarChar(255)
+  start_time_          DateTime  @db.Timestamp(6)
+  end_time_            DateTime? @db.Timestamp(6)
+  removal_time_        DateTime? @db.Timestamp(6)
+
+  @@index([removal_time_], name: "act_hi_bat_rm_time")
+}
+
+model act_hi_caseactinst {
+  id_                 String    @id @db.VarChar(64)
+  parent_act_inst_id_ String?   @db.VarChar(64)
+  case_def_id_        String    @db.VarChar(64)
+  case_inst_id_       String    @db.VarChar(64)
+  case_act_id_        String    @db.VarChar(255)
+  task_id_            String?   @db.VarChar(64)
+  call_proc_inst_id_  String?   @db.VarChar(64)
+  call_case_inst_id_  String?   @db.VarChar(64)
+  case_act_name_      String?   @db.VarChar(255)
+  case_act_type_      String?   @db.VarChar(255)
+  create_time_        DateTime  @db.Timestamp(6)
+  end_time_           DateTime? @db.Timestamp(6)
+  duration_           BigInt?
+  state_              Int?
+  required_           Boolean?
+  tenant_id_          String?   @db.VarChar(64)
+
+  @@index([case_act_id_, end_time_, id_], name: "act_idx_hi_cas_a_i_comp")
+  @@index([create_time_], name: "act_idx_hi_cas_a_i_create")
+  @@index([end_time_], name: "act_idx_hi_cas_a_i_end")
+  @@index([tenant_id_], name: "act_idx_hi_cas_a_i_tenant_id")
+}
+
+model act_hi_caseinst {
+  id_                        String    @id @db.VarChar(64)
+  case_inst_id_              String    @unique @db.VarChar(64)
+  business_key_              String?   @db.VarChar(255)
+  case_def_id_               String    @db.VarChar(64)
+  create_time_               DateTime  @db.Timestamp(6)
+  close_time_                DateTime? @db.Timestamp(6)
+  duration_                  BigInt?
+  state_                     Int?
+  create_user_id_            String?   @db.VarChar(255)
+  super_case_instance_id_    String?   @db.VarChar(64)
+  super_process_instance_id_ String?   @db.VarChar(64)
+  tenant_id_                 String?   @db.VarChar(64)
+
+  @@index([business_key_], name: "act_idx_hi_cas_i_buskey")
+  @@index([close_time_], name: "act_idx_hi_cas_i_close")
+  @@index([tenant_id_], name: "act_idx_hi_cas_i_tenant_id")
+}
+
+model act_hi_comment {
+  id_                String    @id @db.VarChar(64)
+  type_              String?   @db.VarChar(255)
+  time_              DateTime  @db.Timestamp(6)
+  user_id_           String?   @db.VarChar(255)
+  task_id_           String?   @db.VarChar(64)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  proc_inst_id_      String?   @db.VarChar(64)
+  action_            String?   @db.VarChar(255)
+  message_           String?   @db.VarChar(4000)
+  full_msg_          Bytes?
+  tenant_id_         String?   @db.VarChar(64)
+  removal_time_      DateTime? @db.Timestamp(6)
+
+  @@index([proc_inst_id_], name: "act_idx_hi_comment_procinst")
+  @@index([removal_time_], name: "act_idx_hi_comment_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_comment_root_pi")
+  @@index([task_id_], name: "act_idx_hi_comment_task")
+}
+
+model act_hi_dec_in {
+  id_                String    @id @db.VarChar(64)
+  dec_inst_id_       String    @db.VarChar(64)
+  clause_id_         String?   @db.VarChar(64)
+  clause_name_       String?   @db.VarChar(255)
+  var_type_          String?   @db.VarChar(100)
+  bytearray_id_      String?   @db.VarChar(64)
+  double_            Float?
+  long_              BigInt?
+  text_              String?   @db.VarChar(4000)
+  text2_             String?   @db.VarChar(4000)
+  tenant_id_         String?   @db.VarChar(64)
+  create_time_       DateTime? @db.Timestamp(6)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  removal_time_      DateTime? @db.Timestamp(6)
+
+  @@index([dec_inst_id_, clause_id_], name: "act_idx_hi_dec_in_clause")
+  @@index([dec_inst_id_], name: "act_idx_hi_dec_in_inst")
+  @@index([removal_time_], name: "act_idx_hi_dec_in_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_dec_in_root_pi")
+}
+
+model act_hi_dec_out {
+  id_                String    @id @db.VarChar(64)
+  dec_inst_id_       String    @db.VarChar(64)
+  clause_id_         String?   @db.VarChar(64)
+  clause_name_       String?   @db.VarChar(255)
+  rule_id_           String?   @db.VarChar(64)
+  rule_order_        Int?
+  var_name_          String?   @db.VarChar(255)
+  var_type_          String?   @db.VarChar(100)
+  bytearray_id_      String?   @db.VarChar(64)
+  double_            Float?
+  long_              BigInt?
+  text_              String?   @db.VarChar(4000)
+  text2_             String?   @db.VarChar(4000)
+  tenant_id_         String?   @db.VarChar(64)
+  create_time_       DateTime? @db.Timestamp(6)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  removal_time_      DateTime? @db.Timestamp(6)
+
+  @@index([dec_inst_id_], name: "act_idx_hi_dec_out_inst")
+  @@index([removal_time_], name: "act_idx_hi_dec_out_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_dec_out_root_pi")
+  @@index([rule_order_, clause_id_], name: "act_idx_hi_dec_out_rule")
+}
+
+model act_hi_decinst {
+  id_                String    @id @db.VarChar(64)
+  dec_def_id_        String    @db.VarChar(64)
+  dec_def_key_       String    @db.VarChar(255)
+  dec_def_name_      String?   @db.VarChar(255)
+  proc_def_key_      String?   @db.VarChar(255)
+  proc_def_id_       String?   @db.VarChar(64)
+  proc_inst_id_      String?   @db.VarChar(64)
+  case_def_key_      String?   @db.VarChar(255)
+  case_def_id_       String?   @db.VarChar(64)
+  case_inst_id_      String?   @db.VarChar(64)
+  act_inst_id_       String?   @db.VarChar(64)
+  act_id_            String?   @db.VarChar(255)
+  eval_time_         DateTime  @db.Timestamp(6)
+  removal_time_      DateTime? @db.Timestamp(6)
+  collect_value_     Float?
+  user_id_           String?   @db.VarChar(255)
+  root_dec_inst_id_  String?   @db.VarChar(64)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  dec_req_id_        String?   @db.VarChar(64)
+  dec_req_key_       String?   @db.VarChar(255)
+  tenant_id_         String?   @db.VarChar(64)
+
+  @@index([act_id_], name: "act_idx_hi_dec_inst_act")
+  @@index([act_inst_id_], name: "act_idx_hi_dec_inst_act_inst")
+  @@index([case_inst_id_], name: "act_idx_hi_dec_inst_ci")
+  @@index([dec_def_id_], name: "act_idx_hi_dec_inst_id")
+  @@index([dec_def_key_], name: "act_idx_hi_dec_inst_key")
+  @@index([proc_inst_id_], name: "act_idx_hi_dec_inst_pi")
+  @@index([dec_req_id_], name: "act_idx_hi_dec_inst_req_id")
+  @@index([dec_req_key_], name: "act_idx_hi_dec_inst_req_key")
+  @@index([removal_time_], name: "act_idx_hi_dec_inst_rm_time")
+  @@index([root_dec_inst_id_], name: "act_idx_hi_dec_inst_root_id")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_dec_inst_root_pi")
+  @@index([tenant_id_], name: "act_idx_hi_dec_inst_tenant_id")
+  @@index([eval_time_], name: "act_idx_hi_dec_inst_time")
+}
+
+model act_hi_detail {
+  id_                String    @id @db.VarChar(64)
+  type_              String    @db.VarChar(255)
+  proc_def_key_      String?   @db.VarChar(255)
+  proc_def_id_       String?   @db.VarChar(64)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  proc_inst_id_      String?   @db.VarChar(64)
+  execution_id_      String?   @db.VarChar(64)
+  case_def_key_      String?   @db.VarChar(255)
+  case_def_id_       String?   @db.VarChar(64)
+  case_inst_id_      String?   @db.VarChar(64)
+  case_execution_id_ String?   @db.VarChar(64)
+  task_id_           String?   @db.VarChar(64)
+  act_inst_id_       String?   @db.VarChar(64)
+  var_inst_id_       String?   @db.VarChar(64)
+  name_              String    @db.VarChar(255)
+  var_type_          String?   @db.VarChar(64)
+  rev_               Int?
+  time_              DateTime  @db.Timestamp(6)
+  bytearray_id_      String?   @db.VarChar(64)
+  double_            Float?
+  long_              BigInt?
+  text_              String?   @db.VarChar(4000)
+  text2_             String?   @db.VarChar(4000)
+  sequence_counter_  BigInt?
+  tenant_id_         String?   @db.VarChar(64)
+  operation_id_      String?   @db.VarChar(64)
+  removal_time_      DateTime? @db.Timestamp(6)
+  initial_           Boolean?
+
+  @@index([act_inst_id_], name: "act_idx_hi_detail_act_inst")
+  @@index([bytearray_id_], name: "act_idx_hi_detail_bytear")
+  @@index([case_execution_id_], name: "act_idx_hi_detail_case_exec")
+  @@index([case_inst_id_], name: "act_idx_hi_detail_case_inst")
+  @@index([name_], name: "act_idx_hi_detail_name")
+  @@index([proc_def_key_], name: "act_idx_hi_detail_proc_def_key")
+  @@index([proc_inst_id_], name: "act_idx_hi_detail_proc_inst")
+  @@index([removal_time_], name: "act_idx_hi_detail_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_detail_root_pi")
+  @@index([bytearray_id_, task_id_], name: "act_idx_hi_detail_task_bytear")
+  @@index([task_id_], name: "act_idx_hi_detail_task_id")
+  @@index([tenant_id_], name: "act_idx_hi_detail_tenant_id")
+  @@index([time_], name: "act_idx_hi_detail_time")
+  @@index([var_inst_id_], name: "act_idx_hi_detail_var_inst_id")
+}
+
+model act_hi_ext_task_log {
+  id_                String    @id @db.VarChar(64)
+  timestamp_         DateTime  @db.Timestamp(6)
+  ext_task_id_       String    @db.VarChar(64)
+  retries_           Int?
+  topic_name_        String?   @db.VarChar(255)
+  worker_id_         String?   @db.VarChar(255)
+  priority_          BigInt    @default(0)
+  error_msg_         String?   @db.VarChar(4000)
+  error_details_id_  String?   @db.VarChar(64)
+  act_id_            String?   @db.VarChar(255)
+  act_inst_id_       String?   @db.VarChar(64)
+  execution_id_      String?   @db.VarChar(64)
+  proc_inst_id_      String?   @db.VarChar(64)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  proc_def_id_       String?   @db.VarChar(64)
+  proc_def_key_      String?   @db.VarChar(255)
+  tenant_id_         String?   @db.VarChar(64)
+  state_             Int?
+  removal_time_      DateTime? @db.Timestamp(6)
+
+  @@index([proc_def_key_], name: "act_hi_ext_task_log_proc_def_key")
+  @@index([proc_def_id_], name: "act_hi_ext_task_log_procdef")
+  @@index([proc_inst_id_], name: "act_hi_ext_task_log_procinst")
+  @@index([removal_time_], name: "act_hi_ext_task_log_rm_time")
+  @@index([root_proc_inst_id_], name: "act_hi_ext_task_log_root_pi")
+  @@index([tenant_id_], name: "act_hi_ext_task_log_tenant_id")
+  @@index([error_details_id_], name: "act_idx_hi_exttasklog_errordet")
+}
+
+model act_hi_identitylink {
+  id_                String    @id @db.VarChar(64)
+  timestamp_         DateTime  @db.Timestamp(6)
+  type_              String?   @db.VarChar(255)
+  user_id_           String?   @db.VarChar(255)
+  group_id_          String?   @db.VarChar(255)
+  task_id_           String?   @db.VarChar(64)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  proc_def_id_       String?   @db.VarChar(64)
+  operation_type_    String?   @db.VarChar(64)
+  assigner_id_       String?   @db.VarChar(64)
+  proc_def_key_      String?   @db.VarChar(255)
+  tenant_id_         String?   @db.VarChar(64)
+  removal_time_      DateTime? @db.Timestamp(6)
+
+  @@index([removal_time_], name: "act_idx_hi_ident_link_rm_time")
+  @@index([task_id_], name: "act_idx_hi_ident_link_task")
+  @@index([group_id_], name: "act_idx_hi_ident_lnk_group")
+  @@index([proc_def_key_], name: "act_idx_hi_ident_lnk_proc_def_key")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_ident_lnk_root_pi")
+  @@index([tenant_id_], name: "act_idx_hi_ident_lnk_tenant_id")
+  @@index([timestamp_], name: "act_idx_hi_ident_lnk_timestamp")
+  @@index([user_id_], name: "act_idx_hi_ident_lnk_user")
+}
+
+model act_hi_incident {
+  id_                     String    @id @db.VarChar(64)
+  proc_def_key_           String?   @db.VarChar(255)
+  proc_def_id_            String?   @db.VarChar(64)
+  root_proc_inst_id_      String?   @db.VarChar(64)
+  proc_inst_id_           String?   @db.VarChar(64)
+  execution_id_           String?   @db.VarChar(64)
+  create_time_            DateTime  @db.Timestamp(6)
+  end_time_               DateTime? @db.Timestamp(6)
+  incident_msg_           String?   @db.VarChar(4000)
+  incident_type_          String    @db.VarChar(255)
+  activity_id_            String?   @db.VarChar(255)
+  failed_activity_id_     String?   @db.VarChar(255)
+  cause_incident_id_      String?   @db.VarChar(64)
+  root_cause_incident_id_ String?   @db.VarChar(64)
+  configuration_          String?   @db.VarChar(255)
+  history_configuration_  String?   @db.VarChar(255)
+  incident_state_         Int?
+  tenant_id_              String?   @db.VarChar(64)
+  job_def_id_             String?   @db.VarChar(64)
+  annotation_             String?   @db.VarChar(4000)
+  removal_time_           DateTime? @db.Timestamp(6)
+
+  @@index([create_time_], name: "act_idx_hi_incident_create_time")
+  @@index([end_time_], name: "act_idx_hi_incident_end_time")
+  @@index([proc_def_key_], name: "act_idx_hi_incident_proc_def_key")
+  @@index([proc_inst_id_], name: "act_idx_hi_incident_procinst")
+  @@index([removal_time_], name: "act_idx_hi_incident_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_incident_root_pi")
+  @@index([tenant_id_], name: "act_idx_hi_incident_tenant_id")
+}
+
+model act_hi_job_log {
+  id_                     String    @id @db.VarChar(64)
+  timestamp_              DateTime  @db.Timestamp(6)
+  job_id_                 String    @db.VarChar(64)
+  job_duedate_            DateTime? @db.Timestamp(6)
+  job_retries_            Int?
+  job_priority_           BigInt    @default(0)
+  job_exception_msg_      String?   @db.VarChar(4000)
+  job_exception_stack_id_ String?   @db.VarChar(64)
+  job_state_              Int?
+  job_def_id_             String?   @db.VarChar(64)
+  job_def_type_           String?   @db.VarChar(255)
+  job_def_configuration_  String?   @db.VarChar(255)
+  act_id_                 String?   @db.VarChar(255)
+  failed_act_id_          String?   @db.VarChar(255)
+  execution_id_           String?   @db.VarChar(64)
+  root_proc_inst_id_      String?   @db.VarChar(64)
+  process_instance_id_    String?   @db.VarChar(64)
+  process_def_id_         String?   @db.VarChar(64)
+  process_def_key_        String?   @db.VarChar(255)
+  deployment_id_          String?   @db.VarChar(64)
+  sequence_counter_       BigInt?
+  tenant_id_              String?   @db.VarChar(64)
+  hostname_               String?   @db.VarChar(255)
+  removal_time_           DateTime? @db.Timestamp(6)
+
+  @@index([job_exception_stack_id_], name: "act_idx_hi_job_log_ex_stack")
+  @@index([job_def_configuration_], name: "act_idx_hi_job_log_job_conf")
+  @@index([job_def_id_], name: "act_idx_hi_job_log_job_def_id")
+  @@index([process_def_key_], name: "act_idx_hi_job_log_proc_def_key")
+  @@index([process_def_id_], name: "act_idx_hi_job_log_procdef")
+  @@index([process_instance_id_], name: "act_idx_hi_job_log_procinst")
+  @@index([removal_time_], name: "act_idx_hi_job_log_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_job_log_root_pi")
+  @@index([tenant_id_], name: "act_idx_hi_job_log_tenant_id")
+}
+
+model act_hi_op_log {
+  id_                String    @id @db.VarChar(64)
+  deployment_id_     String?   @db.VarChar(64)
+  proc_def_id_       String?   @db.VarChar(64)
+  proc_def_key_      String?   @db.VarChar(255)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  proc_inst_id_      String?   @db.VarChar(64)
+  execution_id_      String?   @db.VarChar(64)
+  case_def_id_       String?   @db.VarChar(64)
+  case_inst_id_      String?   @db.VarChar(64)
+  case_execution_id_ String?   @db.VarChar(64)
+  task_id_           String?   @db.VarChar(64)
+  job_id_            String?   @db.VarChar(64)
+  job_def_id_        String?   @db.VarChar(64)
+  batch_id_          String?   @db.VarChar(64)
+  user_id_           String?   @db.VarChar(255)
+  timestamp_         DateTime  @db.Timestamp(6)
+  operation_type_    String?   @db.VarChar(64)
+  operation_id_      String?   @db.VarChar(64)
+  entity_type_       String?   @db.VarChar(30)
+  property_          String?   @db.VarChar(64)
+  org_value_         String?   @db.VarChar(4000)
+  new_value_         String?   @db.VarChar(4000)
+  tenant_id_         String?   @db.VarChar(64)
+  removal_time_      DateTime? @db.Timestamp(6)
+  category_          String?   @db.VarChar(64)
+  external_task_id_  String?   @db.VarChar(64)
+  annotation_        String?   @db.VarChar(4000)
+
+  @@index([entity_type_], name: "act_idx_hi_op_log_entity_type")
+  @@index([operation_type_], name: "act_idx_hi_op_log_op_type")
+  @@index([proc_def_id_], name: "act_idx_hi_op_log_procdef")
+  @@index([proc_inst_id_], name: "act_idx_hi_op_log_procinst")
+  @@index([removal_time_], name: "act_idx_hi_op_log_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_op_log_root_pi")
+  @@index([task_id_], name: "act_idx_hi_op_log_task")
+  @@index([timestamp_], name: "act_idx_hi_op_log_timestamp")
+  @@index([user_id_], name: "act_idx_hi_op_log_user_id")
+}
+
+model act_hi_procinst {
+  id_                        String    @id @db.VarChar(64)
+  proc_inst_id_              String    @unique @db.VarChar(64)
+  business_key_              String?   @db.VarChar(255)
+  proc_def_key_              String?   @db.VarChar(255)
+  proc_def_id_               String    @db.VarChar(64)
+  start_time_                DateTime  @db.Timestamp(6)
+  end_time_                  DateTime? @db.Timestamp(6)
+  removal_time_              DateTime? @db.Timestamp(6)
+  duration_                  BigInt?
+  start_user_id_             String?   @db.VarChar(255)
+  start_act_id_              String?   @db.VarChar(255)
+  end_act_id_                String?   @db.VarChar(255)
+  super_process_instance_id_ String?   @db.VarChar(64)
+  root_proc_inst_id_         String?   @db.VarChar(64)
+  super_case_instance_id_    String?   @db.VarChar(64)
+  case_inst_id_              String?   @db.VarChar(64)
+  delete_reason_             String?   @db.VarChar(4000)
+  tenant_id_                 String?   @db.VarChar(64)
+  state_                     String?   @db.VarChar(255)
+
+  @@index([proc_def_id_, end_time_], name: "act_idx_hi_pi_pdefid_end_time")
+  @@index([business_key_], name: "act_idx_hi_pro_i_buskey")
+  @@index([end_time_], name: "act_idx_hi_pro_inst_end")
+  @@index([proc_def_key_], name: "act_idx_hi_pro_inst_proc_def_key")
+  @@index([start_time_, end_time_], name: "act_idx_hi_pro_inst_proc_time")
+  @@index([removal_time_], name: "act_idx_hi_pro_inst_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_pro_inst_root_pi")
+  @@index([tenant_id_], name: "act_idx_hi_pro_inst_tenant_id")
+}
+
+model act_hi_taskinst {
+  id_                String    @id @db.VarChar(64)
+  task_def_key_      String?   @db.VarChar(255)
+  proc_def_key_      String?   @db.VarChar(255)
+  proc_def_id_       String?   @db.VarChar(64)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  proc_inst_id_      String?   @db.VarChar(64)
+  execution_id_      String?   @db.VarChar(64)
+  case_def_key_      String?   @db.VarChar(255)
+  case_def_id_       String?   @db.VarChar(64)
+  case_inst_id_      String?   @db.VarChar(64)
+  case_execution_id_ String?   @db.VarChar(64)
+  act_inst_id_       String?   @db.VarChar(64)
+  name_              String?   @db.VarChar(255)
+  parent_task_id_    String?   @db.VarChar(64)
+  description_       String?   @db.VarChar(4000)
+  owner_             String?   @db.VarChar(255)
+  assignee_          String?   @db.VarChar(255)
+  start_time_        DateTime  @db.Timestamp(6)
+  end_time_          DateTime? @db.Timestamp(6)
+  duration_          BigInt?
+  delete_reason_     String?   @db.VarChar(4000)
+  priority_          Int?
+  due_date_          DateTime? @db.Timestamp(6)
+  follow_up_date_    DateTime? @db.Timestamp(6)
+  tenant_id_         String?   @db.VarChar(64)
+  removal_time_      DateTime? @db.Timestamp(6)
+
+  @@index([end_time_], name: "act_idx_hi_task_inst_end")
+  @@index([proc_def_key_], name: "act_idx_hi_task_inst_proc_def_key")
+  @@index([removal_time_], name: "act_idx_hi_task_inst_rm_time")
+  @@index([start_time_], name: "act_idx_hi_task_inst_start")
+  @@index([tenant_id_], name: "act_idx_hi_task_inst_tenant_id")
+  @@index([proc_inst_id_], name: "act_idx_hi_taskinst_procinst")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_taskinst_root_pi")
+  @@index([id_, proc_inst_id_], name: "act_idx_hi_taskinstid_procinst")
+}
+
+model act_hi_varinst {
+  id_                String    @id @db.VarChar(64)
+  proc_def_key_      String?   @db.VarChar(255)
+  proc_def_id_       String?   @db.VarChar(64)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+  proc_inst_id_      String?   @db.VarChar(64)
+  execution_id_      String?   @db.VarChar(64)
+  act_inst_id_       String?   @db.VarChar(64)
+  case_def_key_      String?   @db.VarChar(255)
+  case_def_id_       String?   @db.VarChar(64)
+  case_inst_id_      String?   @db.VarChar(64)
+  case_execution_id_ String?   @db.VarChar(64)
+  task_id_           String?   @db.VarChar(64)
+  name_              String    @db.VarChar(255)
+  var_type_          String?   @db.VarChar(100)
+  create_time_       DateTime? @db.Timestamp(6)
+  rev_               Int?
+  bytearray_id_      String?   @db.VarChar(64)
+  double_            Float?
+  long_              BigInt?
+  text_              String?   @db.VarChar(4000)
+  text2_             String?   @db.VarChar(4000)
+  tenant_id_         String?   @db.VarChar(64)
+  state_             String?   @db.VarChar(20)
+  removal_time_      DateTime? @db.Timestamp(6)
+
+  @@index([case_inst_id_], name: "act_idx_hi_casevar_case_inst")
+  @@index([name_, var_type_], name: "act_idx_hi_procvar_name_type")
+  @@index([proc_inst_id_], name: "act_idx_hi_procvar_proc_inst")
+  @@index([proc_def_key_], name: "act_idx_hi_var_inst_proc_def_key")
+  @@index([tenant_id_], name: "act_idx_hi_var_inst_tenant_id")
+  @@index([proc_inst_id_, name_, var_type_], name: "act_idx_hi_var_pi_name_type")
+  @@index([bytearray_id_], name: "act_idx_hi_varinst_bytear")
+  @@index([removal_time_], name: "act_idx_hi_varinst_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_hi_varinst_root_pi")
+}
+
+model act_id_group {
+  id_                  String                 @id @db.VarChar(255)
+  rev_                 Int?
+  name_                String?                @db.VarChar(255)
+  type_                String?                @db.VarChar(255)
+  parent_id_           String?                @db.VarChar(255)
+  act_id_group         act_id_group?          @relation("act_id_groupToact_id_group_parent_id_", fields: [parent_id_], references: [id_])
+  other_act_id_group   act_id_group[]         @relation("act_id_groupToact_id_group_parent_id_")
+  act_id_membership    act_id_membership[]
+  act_id_tenant_member act_id_tenant_member[]
+  az_membership        az_membership[]
+}
+
+model act_id_info {
+  id_        String  @id @db.VarChar(64)
+  rev_       Int?
+  user_id_   String? @db.VarChar(64)
+  type_      String? @db.VarChar(64)
+  key_       String? @db.VarChar(255)
+  value_     String? @db.VarChar(255)
+  password_  Bytes?
+  parent_id_ String? @db.VarChar(255)
+}
+
+model act_id_membership {
+  user_id_     String       @db.VarChar(255)
+  group_id_    String       @db.VarChar(255)
+  act_id_group act_id_group @relation(fields: [group_id_], references: [id_])
+  act_id_user  act_id_user  @relation(fields: [user_id_], references: [id_])
+
+  @@id([user_id_, group_id_])
+  @@index([group_id_], name: "act_idx_memb_group")
+  @@index([user_id_], name: "act_idx_memb_user")
+}
+
+model act_id_tenant {
+  id_                  String                 @id @db.VarChar(64)
+  rev_                 Int?
+  name_                String?                @db.VarChar(255)
+  act_id_tenant_member act_id_tenant_member[]
+}
+
+model act_id_tenant_member {
+  id_           String        @id @db.VarChar(64)
+  tenant_id_    String        @db.VarChar(64)
+  user_id_      String?       @db.VarChar(255)
+  group_id_     String?       @db.VarChar(255)
+  act_id_group  act_id_group? @relation(fields: [group_id_], references: [id_])
+  act_id_tenant act_id_tenant @relation(fields: [tenant_id_], references: [id_])
+  act_id_user   act_id_user?  @relation(fields: [user_id_], references: [id_])
+
+  @@unique([tenant_id_, group_id_], name: "act_uniq_tenant_memb_group")
+  @@unique([tenant_id_, user_id_], name: "act_uniq_tenant_memb_user")
+  @@index([tenant_id_], name: "act_idx_tenant_memb")
+  @@index([group_id_], name: "act_idx_tenant_memb_group")
+  @@index([user_id_], name: "act_idx_tenant_memb_user")
+}
+
+model act_id_user {
+  id_                  String                 @id @db.VarChar(255)
+  rev_                 Int?
+  first_               String?                @db.VarChar(255)
+  last_                String?                @db.VarChar(255)
+  email_               String?                @db.VarChar(255)
+  pwd_                 String?                @db.VarChar(255)
+  salt_                String?                @db.VarChar(255)
+  lock_exp_time_       DateTime?              @db.Timestamp(6)
+  attempts_            Int?
+  picture_id_          String?                @db.VarChar(64)
+  act_id_membership    act_id_membership[]
+  act_id_tenant_member act_id_tenant_member[]
+  az_membership        az_membership[]
+  az_notification      az_notification[]
+  iknito_researcher    iknito_researcher[]
+}
+
+model act_re_case_def {
+  id_                   String                  @id @db.VarChar(64)
+  rev_                  Int?
+  category_             String?                 @db.VarChar(255)
+  name_                 String?                 @db.VarChar(255)
+  key_                  String                  @db.VarChar(255)
+  version_              Int
+  deployment_id_        String?                 @db.VarChar(64)
+  resource_name_        String?                 @db.VarChar(4000)
+  dgrm_resource_name_   String?                 @db.VarChar(4000)
+  tenant_id_            String?                 @db.VarChar(64)
+  history_ttl_          Int?
+  act_ru_case_execution act_ru_case_execution[]
+  act_ru_task           act_ru_task[]
+
+  @@index([tenant_id_], name: "act_idx_case_def_tenant_id")
+}
+
+model act_re_decision_def {
+  id_                     String                   @id @db.VarChar(64)
+  rev_                    Int?
+  category_               String?                  @db.VarChar(255)
+  name_                   String?                  @db.VarChar(255)
+  key_                    String                   @db.VarChar(255)
+  version_                Int
+  deployment_id_          String?                  @db.VarChar(64)
+  resource_name_          String?                  @db.VarChar(4000)
+  dgrm_resource_name_     String?                  @db.VarChar(4000)
+  dec_req_id_             String?                  @db.VarChar(64)
+  dec_req_key_            String?                  @db.VarChar(255)
+  tenant_id_              String?                  @db.VarChar(64)
+  history_ttl_            Int?
+  version_tag_            String?                  @db.VarChar(64)
+  act_re_decision_req_def act_re_decision_req_def? @relation(fields: [dec_req_id_], references: [id_])
+
+  @@index([dec_req_id_], name: "act_idx_dec_def_req_id")
+  @@index([tenant_id_], name: "act_idx_dec_def_tenant_id")
+}
+
+model act_re_decision_req_def {
+  id_                 String                @id @db.VarChar(64)
+  rev_                Int?
+  category_           String?               @db.VarChar(255)
+  name_               String?               @db.VarChar(255)
+  key_                String                @db.VarChar(255)
+  version_            Int
+  deployment_id_      String?               @db.VarChar(64)
+  resource_name_      String?               @db.VarChar(4000)
+  dgrm_resource_name_ String?               @db.VarChar(4000)
+  tenant_id_          String?               @db.VarChar(64)
+  act_re_decision_def act_re_decision_def[]
+
+  @@index([tenant_id_], name: "act_idx_dec_req_def_tenant_id")
+}
+
+model act_re_deployment {
+  id_              String             @id @db.VarChar(64)
+  name_            String?            @db.VarChar(255)
+  deploy_time_     DateTime?          @db.Timestamp(6)
+  source_          String?            @db.VarChar(255)
+  tenant_id_       String?            @db.VarChar(64)
+  act_ge_bytearray act_ge_bytearray[]
+
+  @@index([name_], name: "act_idx_deployment_name")
+  @@index([tenant_id_], name: "act_idx_deployment_tenant_id")
+}
+
+model act_re_procdef {
+  id_                 String                @id @db.VarChar(64)
+  rev_                Int?
+  category_           String?               @db.VarChar(255)
+  name_               String?               @db.VarChar(255)
+  key_                String                @db.VarChar(255)
+  version_            Int
+  deployment_id_      String?               @db.VarChar(64)
+  resource_name_      String?               @db.VarChar(4000)
+  dgrm_resource_name_ String?               @db.VarChar(4000)
+  has_start_form_key_ Boolean?
+  suspension_state_   Int?
+  tenant_id_          String?               @db.VarChar(64)
+  version_tag_        String?               @db.VarChar(64)
+  history_ttl_        Int?
+  startable_          Boolean               @default(true)
+  act_ru_execution    act_ru_execution[]
+  act_ru_identitylink act_ru_identitylink[]
+  act_ru_incident     act_ru_incident[]
+  act_ru_task         act_ru_task[]
+
+  @@index([deployment_id_], name: "act_idx_procdef_deployment_id")
+  @@index([tenant_id_], name: "act_idx_procdef_tenant_id")
+  @@index([version_tag_], name: "act_idx_procdef_ver_tag")
+}
+
+model act_ru_authorization {
+  id_                String    @id @db.VarChar(64)
+  rev_               Int
+  type_              Int
+  group_id_          String?   @db.VarChar(255)
+  user_id_           String?   @db.VarChar(255)
+  resource_type_     Int
+  resource_id_       String?   @db.VarChar(255)
+  perms_             Int?
+  removal_time_      DateTime? @db.Timestamp(6)
+  root_proc_inst_id_ String?   @db.VarChar(64)
+
+  @@unique([type_, group_id_, resource_type_, resource_id_], name: "act_uniq_auth_group")
+  @@unique([type_, user_id_, resource_type_, resource_id_], name: "act_uniq_auth_user")
+  @@index([group_id_], name: "act_idx_auth_group_id")
+  @@index([resource_id_], name: "act_idx_auth_resource_id")
+  @@index([removal_time_], name: "act_idx_auth_rm_time")
+  @@index([root_proc_inst_id_], name: "act_idx_auth_root_pi")
+}
+
+model act_ru_batch {
+  id_                                                           String            @id @db.VarChar(64)
+  rev_                                                          Int
+  type_                                                         String?           @db.VarChar(255)
+  total_jobs_                                                   Int?
+  jobs_created_                                                 Int?
+  jobs_per_seed_                                                Int?
+  invocations_per_job_                                          Int?
+  seed_job_def_id_                                              String?           @db.VarChar(64)
+  batch_job_def_id_                                             String?           @db.VarChar(64)
+  monitor_job_def_id_                                           String?           @db.VarChar(64)
+  suspension_state_                                             Int?
+  configuration_                                                String?           @db.VarChar(255)
+  tenant_id_                                                    String?           @db.VarChar(64)
+  create_user_id_                                               String?           @db.VarChar(255)
+  act_ru_jobdef_act_ru_batch_batch_job_def_id_Toact_ru_jobdef   act_ru_jobdef?    @relation("act_ru_batch_batch_job_def_id_Toact_ru_jobdef", fields: [batch_job_def_id_], references: [id_])
+  act_ru_jobdef_act_ru_batch_monitor_job_def_id_Toact_ru_jobdef act_ru_jobdef?    @relation("act_ru_batch_monitor_job_def_id_Toact_ru_jobdef", fields: [monitor_job_def_id_], references: [id_])
+  act_ru_jobdef_act_ru_batch_seed_job_def_id_Toact_ru_jobdef    act_ru_jobdef?    @relation("act_ru_batch_seed_job_def_id_Toact_ru_jobdef", fields: [seed_job_def_id_], references: [id_])
+  act_ru_variable                                               act_ru_variable[]
+
+  @@index([batch_job_def_id_], name: "act_idx_batch_job_def")
+  @@index([monitor_job_def_id_], name: "act_idx_batch_monitor_job_def")
+  @@index([seed_job_def_id_], name: "act_idx_batch_seed_job_def")
+}
+
+model act_ru_case_execution {
+  id_                                                                                    String                    @id @db.VarChar(64)
+  rev_                                                                                   Int?
+  case_inst_id_                                                                          String?                   @db.VarChar(64)
+  super_case_exec_                                                                       String?                   @db.VarChar(64)
+  super_exec_                                                                            String?                   @db.VarChar(64)
+  business_key_                                                                          String?                   @db.VarChar(255)
+  parent_id_                                                                             String?                   @db.VarChar(64)
+  case_def_id_                                                                           String?                   @db.VarChar(64)
+  act_id_                                                                                String?                   @db.VarChar(255)
+  prev_state_                                                                            Int?
+  current_state_                                                                         Int?
+  required_                                                                              Boolean?
+  tenant_id_                                                                             String?                   @db.VarChar(64)
+  act_re_case_def                                                                        act_re_case_def?          @relation(fields: [case_def_id_], references: [id_])
+  act_ru_case_execution_act_ru_case_executionToact_ru_case_execution_case_inst_id_       act_ru_case_execution?    @relation("act_ru_case_executionToact_ru_case_execution_case_inst_id_", fields: [case_inst_id_], references: [id_])
+  act_ru_case_execution_act_ru_case_executionToact_ru_case_execution_parent_id_          act_ru_case_execution?    @relation("act_ru_case_executionToact_ru_case_execution_parent_id_", fields: [parent_id_], references: [id_])
+  other_act_ru_case_execution_act_ru_case_executionToact_ru_case_execution_case_inst_id_ act_ru_case_execution[]   @relation("act_ru_case_executionToact_ru_case_execution_case_inst_id_")
+  other_act_ru_case_execution_act_ru_case_executionToact_ru_case_execution_parent_id_    act_ru_case_execution[]   @relation("act_ru_case_executionToact_ru_case_execution_parent_id_")
+  act_ru_case_sentry_part_act_ru_case_executionToact_ru_case_sentry_part_case_exec_id_   act_ru_case_sentry_part[] @relation("act_ru_case_executionToact_ru_case_sentry_part_case_exec_id_")
+  act_ru_case_sentry_part_act_ru_case_executionToact_ru_case_sentry_part_case_inst_id_   act_ru_case_sentry_part[] @relation("act_ru_case_executionToact_ru_case_sentry_part_case_inst_id_")
+  act_ru_task                                                                            act_ru_task[]
+  act_ru_variable_act_ru_case_executionToact_ru_variable_case_execution_id_              act_ru_variable[]         @relation("act_ru_case_executionToact_ru_variable_case_execution_id_")
+  act_ru_variable_act_ru_case_executionToact_ru_variable_case_inst_id_                   act_ru_variable[]         @relation("act_ru_case_executionToact_ru_variable_case_inst_id_")
+
+  @@index([case_def_id_], name: "act_idx_case_exe_case_def")
+  @@index([case_inst_id_], name: "act_idx_case_exe_case_inst")
+  @@index([parent_id_], name: "act_idx_case_exe_parent")
+  @@index([business_key_], name: "act_idx_case_exec_buskey")
+  @@index([tenant_id_], name: "act_idx_case_exec_tenant_id")
+}
+
+model act_ru_case_sentry_part {
+  id_                                                                                String                 @id @db.VarChar(64)
+  rev_                                                                               Int?
+  case_inst_id_                                                                      String?                @db.VarChar(64)
+  case_exec_id_                                                                      String?                @db.VarChar(64)
+  sentry_id_                                                                         String?                @db.VarChar(255)
+  type_                                                                              String?                @db.VarChar(255)
+  source_case_exec_id_                                                               String?                @db.VarChar(64)
+  standard_event_                                                                    String?                @db.VarChar(255)
+  source_                                                                            String?                @db.VarChar(255)
+  variable_event_                                                                    String?                @db.VarChar(255)
+  variable_name_                                                                     String?                @db.VarChar(255)
+  satisfied_                                                                         Boolean?
+  tenant_id_                                                                         String?                @db.VarChar(64)
+  act_ru_case_execution_act_ru_case_executionToact_ru_case_sentry_part_case_exec_id_ act_ru_case_execution? @relation("act_ru_case_executionToact_ru_case_sentry_part_case_exec_id_", fields: [case_exec_id_], references: [id_])
+  act_ru_case_execution_act_ru_case_executionToact_ru_case_sentry_part_case_inst_id_ act_ru_case_execution? @relation("act_ru_case_executionToact_ru_case_sentry_part_case_inst_id_", fields: [case_inst_id_], references: [id_])
+
+  @@index([case_exec_id_], name: "act_idx_case_sentry_case_exec")
+  @@index([case_inst_id_], name: "act_idx_case_sentry_case_inst")
+}
+
+model act_ru_event_subscr {
+  id_              String            @id @db.VarChar(64)
+  rev_             Int?
+  event_type_      String            @db.VarChar(255)
+  event_name_      String?           @db.VarChar(255)
+  execution_id_    String?           @db.VarChar(64)
+  proc_inst_id_    String?           @db.VarChar(64)
+  activity_id_     String?           @db.VarChar(255)
+  configuration_   String?           @db.VarChar(255)
+  created_         DateTime          @db.Timestamp(6)
+  tenant_id_       String?           @db.VarChar(64)
+  act_ru_execution act_ru_execution? @relation(fields: [execution_id_], references: [id_])
+
+  @@index([execution_id_], name: "act_idx_event_subscr")
+  @@index([configuration_], name: "act_idx_event_subscr_config_")
+  @@index([event_name_], name: "act_idx_event_subscr_evt_name")
+  @@index([tenant_id_], name: "act_idx_event_subscr_tenant_id")
+}
+
+model act_ru_execution {
+  id_                                                                     String                @id @db.VarChar(64)
+  rev_                                                                    Int?
+  root_proc_inst_id_                                                      String?               @db.VarChar(64)
+  proc_inst_id_                                                           String?               @db.VarChar(64)
+  business_key_                                                           String?               @db.VarChar(255)
+  parent_id_                                                              String?               @db.VarChar(64)
+  proc_def_id_                                                            String?               @db.VarChar(64)
+  super_exec_                                                             String?               @db.VarChar(64)
+  super_case_exec_                                                        String?               @db.VarChar(64)
+  case_inst_id_                                                           String?               @db.VarChar(64)
+  act_id_                                                                 String?               @db.VarChar(255)
+  act_inst_id_                                                            String?               @db.VarChar(64)
+  is_active_                                                              Boolean?
+  is_concurrent_                                                          Boolean?
+  is_scope_                                                               Boolean?
+  is_event_scope_                                                         Boolean?
+  suspension_state_                                                       Int?
+  cached_ent_state_                                                       Int?
+  sequence_counter_                                                       BigInt?
+  tenant_id_                                                              String?               @db.VarChar(64)
+  act_ru_execution_act_ru_executionToact_ru_execution_parent_id_          act_ru_execution?     @relation("act_ru_executionToact_ru_execution_parent_id_", fields: [parent_id_], references: [id_])
+  act_re_procdef                                                          act_re_procdef?       @relation(fields: [proc_def_id_], references: [id_])
+  act_ru_execution_act_ru_executionToact_ru_execution_proc_inst_id_       act_ru_execution?     @relation("act_ru_executionToact_ru_execution_proc_inst_id_", fields: [proc_inst_id_], references: [id_])
+  act_ru_execution_act_ru_executionToact_ru_execution_super_exec_         act_ru_execution?     @relation("act_ru_executionToact_ru_execution_super_exec_", fields: [super_exec_], references: [id_])
+  act_ru_event_subscr                                                     act_ru_event_subscr[]
+  other_act_ru_execution_act_ru_executionToact_ru_execution_parent_id_    act_ru_execution[]    @relation("act_ru_executionToact_ru_execution_parent_id_")
+  other_act_ru_execution_act_ru_executionToact_ru_execution_proc_inst_id_ act_ru_execution[]    @relation("act_ru_executionToact_ru_execution_proc_inst_id_")
+  other_act_ru_execution_act_ru_executionToact_ru_execution_super_exec_   act_ru_execution[]    @relation("act_ru_executionToact_ru_execution_super_exec_")
+  act_ru_ext_task                                                         act_ru_ext_task[]
+  act_ru_incident_act_ru_executionToact_ru_incident_execution_id_         act_ru_incident[]     @relation("act_ru_executionToact_ru_incident_execution_id_")
+  act_ru_incident_act_ru_executionToact_ru_incident_proc_inst_id_         act_ru_incident[]     @relation("act_ru_executionToact_ru_incident_proc_inst_id_")
+  act_ru_task_act_ru_executionToact_ru_task_execution_id_                 act_ru_task[]         @relation("act_ru_executionToact_ru_task_execution_id_")
+  act_ru_task_act_ru_executionToact_ru_task_proc_inst_id_                 act_ru_task[]         @relation("act_ru_executionToact_ru_task_proc_inst_id_")
+  act_ru_variable_act_ru_executionToact_ru_variable_execution_id_         act_ru_variable[]     @relation("act_ru_executionToact_ru_variable_execution_id_")
+  act_ru_variable_act_ru_executionToact_ru_variable_proc_inst_id_         act_ru_variable[]     @relation("act_ru_executionToact_ru_variable_proc_inst_id_")
+
+  @@index([parent_id_], name: "act_idx_exe_parent")
+  @@index([proc_def_id_], name: "act_idx_exe_procdef")
+  @@index([proc_inst_id_], name: "act_idx_exe_procinst")
+  @@index([root_proc_inst_id_], name: "act_idx_exe_root_pi")
+  @@index([super_exec_], name: "act_idx_exe_super")
+  @@index([business_key_], name: "act_idx_exec_buskey")
+  @@index([tenant_id_], name: "act_idx_exec_tenant_id")
+}
+
+model act_ru_ext_task {
+  id_               String            @id @db.VarChar(64)
+  rev_              Int
+  worker_id_        String?           @db.VarChar(255)
+  topic_name_       String?           @db.VarChar(255)
+  retries_          Int?
+  error_msg_        String?           @db.VarChar(4000)
+  error_details_id_ String?           @db.VarChar(64)
+  lock_exp_time_    DateTime?         @db.Timestamp(6)
+  suspension_state_ Int?
+  execution_id_     String?           @db.VarChar(64)
+  proc_inst_id_     String?           @db.VarChar(64)
+  proc_def_id_      String?           @db.VarChar(64)
+  proc_def_key_     String?           @db.VarChar(255)
+  act_id_           String?           @db.VarChar(255)
+  act_inst_id_      String?           @db.VarChar(64)
+  tenant_id_        String?           @db.VarChar(64)
+  priority_         BigInt            @default(0)
+  act_ge_bytearray  act_ge_bytearray? @relation(fields: [error_details_id_], references: [id_])
+  act_ru_execution  act_ru_execution? @relation(fields: [execution_id_], references: [id_])
+
+  @@index([error_details_id_], name: "act_idx_ext_task_err_details")
+  @@index([execution_id_], name: "act_idx_ext_task_exec")
+  @@index([priority_], name: "act_idx_ext_task_priority")
+  @@index([tenant_id_], name: "act_idx_ext_task_tenant_id")
+  @@index([topic_name_], name: "act_idx_ext_task_topic")
+}
+
+model act_ru_filter {
+  id_            String  @id @db.VarChar(64)
+  rev_           Int
+  resource_type_ String  @db.VarChar(255)
+  name_          String  @db.VarChar(255)
+  owner_         String? @db.VarChar(255)
+  query_         String
+  properties_    String?
+}
+
+model act_ru_identitylink {
+  id_            String          @id @db.VarChar(64)
+  rev_           Int?
+  group_id_      String?         @db.VarChar(255)
+  type_          String?         @db.VarChar(255)
+  user_id_       String?         @db.VarChar(255)
+  task_id_       String?         @db.VarChar(64)
+  proc_def_id_   String?         @db.VarChar(64)
+  tenant_id_     String?         @db.VarChar(64)
+  act_re_procdef act_re_procdef? @relation(fields: [proc_def_id_], references: [id_])
+  act_ru_task    act_ru_task?    @relation(fields: [task_id_], references: [id_])
+
+  @@index([proc_def_id_], name: "act_idx_athrz_procedef")
+  @@index([group_id_], name: "act_idx_ident_lnk_group")
+  @@index([user_id_], name: "act_idx_ident_lnk_user")
+  @@index([task_id_], name: "act_idx_tskass_task")
+}
+
+model act_ru_incident {
+  id_                                                                            String            @id @db.VarChar(64)
+  rev_                                                                           Int
+  incident_timestamp_                                                            DateTime          @db.Timestamp(6)
+  incident_msg_                                                                  String?           @db.VarChar(4000)
+  incident_type_                                                                 String            @db.VarChar(255)
+  execution_id_                                                                  String?           @db.VarChar(64)
+  activity_id_                                                                   String?           @db.VarChar(255)
+  failed_activity_id_                                                            String?           @db.VarChar(255)
+  proc_inst_id_                                                                  String?           @db.VarChar(64)
+  proc_def_id_                                                                   String?           @db.VarChar(64)
+  cause_incident_id_                                                             String?           @db.VarChar(64)
+  root_cause_incident_id_                                                        String?           @db.VarChar(64)
+  configuration_                                                                 String?           @db.VarChar(255)
+  tenant_id_                                                                     String?           @db.VarChar(64)
+  job_def_id_                                                                    String?           @db.VarChar(64)
+  annotation_                                                                    String?           @db.VarChar(4000)
+  act_ru_incident_act_ru_incidentToact_ru_incident_cause_incident_id_            act_ru_incident?  @relation("act_ru_incidentToact_ru_incident_cause_incident_id_", fields: [cause_incident_id_], references: [id_])
+  act_ru_execution_act_ru_executionToact_ru_incident_execution_id_               act_ru_execution? @relation("act_ru_executionToact_ru_incident_execution_id_", fields: [execution_id_], references: [id_])
+  act_ru_jobdef                                                                  act_ru_jobdef?    @relation(fields: [job_def_id_], references: [id_])
+  act_re_procdef                                                                 act_re_procdef?   @relation(fields: [proc_def_id_], references: [id_])
+  act_ru_execution_act_ru_executionToact_ru_incident_proc_inst_id_               act_ru_execution? @relation("act_ru_executionToact_ru_incident_proc_inst_id_", fields: [proc_inst_id_], references: [id_])
+  act_ru_incident_act_ru_incidentToact_ru_incident_root_cause_incident_id_       act_ru_incident?  @relation("act_ru_incidentToact_ru_incident_root_cause_incident_id_", fields: [root_cause_incident_id_], references: [id_])
+  other_act_ru_incident_act_ru_incidentToact_ru_incident_cause_incident_id_      act_ru_incident[] @relation("act_ru_incidentToact_ru_incident_cause_incident_id_")
+  other_act_ru_incident_act_ru_incidentToact_ru_incident_root_cause_incident_id_ act_ru_incident[] @relation("act_ru_incidentToact_ru_incident_root_cause_incident_id_")
+
+  @@index([cause_incident_id_], name: "act_idx_inc_causeincid")
+  @@index([configuration_], name: "act_idx_inc_configuration")
+  @@index([execution_id_], name: "act_idx_inc_exid")
+  @@index([job_def_id_], name: "act_idx_inc_job_def")
+  @@index([proc_def_id_], name: "act_idx_inc_procdefid")
+  @@index([proc_inst_id_], name: "act_idx_inc_procinstid")
+  @@index([root_cause_incident_id_], name: "act_idx_inc_rootcauseincid")
+  @@index([tenant_id_], name: "act_idx_inc_tenant_id")
+}
+
+model act_ru_job {
+  id_                  String            @id @db.VarChar(64)
+  rev_                 Int?
+  type_                String            @db.VarChar(255)
+  lock_exp_time_       DateTime?         @db.Timestamp(6)
+  lock_owner_          String?           @db.VarChar(255)
+  exclusive_           Boolean?
+  execution_id_        String?           @db.VarChar(64)
+  process_instance_id_ String?           @db.VarChar(64)
+  process_def_id_      String?           @db.VarChar(64)
+  process_def_key_     String?           @db.VarChar(255)
+  retries_             Int?
+  exception_stack_id_  String?           @db.VarChar(64)
+  exception_msg_       String?           @db.VarChar(4000)
+  failed_act_id_       String?           @db.VarChar(255)
+  duedate_             DateTime?         @db.Timestamp(6)
+  repeat_              String?           @db.VarChar(255)
+  repeat_offset_       BigInt?           @default(0)
+  handler_type_        String?           @db.VarChar(255)
+  handler_cfg_         String?           @db.VarChar(4000)
+  deployment_id_       String?           @db.VarChar(64)
+  suspension_state_    Int               @default(1)
+  job_def_id_          String?           @db.VarChar(64)
+  priority_            BigInt            @default(0)
+  sequence_counter_    BigInt?
+  tenant_id_           String?           @db.VarChar(64)
+  create_time_         DateTime?         @db.Timestamp(6)
+  act_ge_bytearray     act_ge_bytearray? @relation(fields: [exception_stack_id_], references: [id_])
+
+  @@index([exception_stack_id_], name: "act_idx_job_exception")
+  @@index([execution_id_], name: "act_idx_job_execution_id")
+  @@index([handler_type_, handler_cfg_], name: "act_idx_job_handler")
+  @@index([handler_type_], name: "act_idx_job_handler_type")
+  @@index([job_def_id_], name: "act_idx_job_job_def_id")
+  @@index([process_instance_id_], name: "act_idx_job_procinst")
+  @@index([tenant_id_], name: "act_idx_job_tenant_id")
+}
+
+model act_ru_jobdef {
+  id_                                                          String            @id @db.VarChar(64)
+  rev_                                                         Int?
+  proc_def_id_                                                 String?           @db.VarChar(64)
+  proc_def_key_                                                String?           @db.VarChar(255)
+  act_id_                                                      String?           @db.VarChar(255)
+  job_type_                                                    String            @db.VarChar(255)
+  job_configuration_                                           String?           @db.VarChar(255)
+  suspension_state_                                            Int?
+  job_priority_                                                BigInt?
+  tenant_id_                                                   String?           @db.VarChar(64)
+  deployment_id_                                               String?           @db.VarChar(64)
+  act_ru_batch_act_ru_batch_batch_job_def_id_Toact_ru_jobdef   act_ru_batch[]    @relation("act_ru_batch_batch_job_def_id_Toact_ru_jobdef")
+  act_ru_batch_act_ru_batch_monitor_job_def_id_Toact_ru_jobdef act_ru_batch[]    @relation("act_ru_batch_monitor_job_def_id_Toact_ru_jobdef")
+  act_ru_batch_act_ru_batch_seed_job_def_id_Toact_ru_jobdef    act_ru_batch[]    @relation("act_ru_batch_seed_job_def_id_Toact_ru_jobdef")
+  act_ru_incident                                              act_ru_incident[]
+
+  @@index([proc_def_id_], name: "act_idx_jobdef_proc_def_id")
+  @@index([tenant_id_], name: "act_idx_jobdef_tenant_id")
+}
+
+model act_ru_meter_log {
+  id_           String    @id @db.VarChar(64)
+  name_         String    @db.VarChar(64)
+  reporter_     String?   @db.VarChar(255)
+  value_        BigInt?
+  timestamp_    DateTime? @db.Timestamp(6)
+  milliseconds_ BigInt?   @default(0)
+
+  @@index([name_, timestamp_], name: "act_idx_meter_log")
+  @@index([milliseconds_], name: "act_idx_meter_log_ms")
+  @@index([name_, milliseconds_], name: "act_idx_meter_log_name_ms")
+  @@index([name_, reporter_, milliseconds_], name: "act_idx_meter_log_report")
+  @@index([timestamp_], name: "act_idx_meter_log_time")
+}
+
+model act_ru_task {
+  id_                                                          String                 @id @db.VarChar(64)
+  rev_                                                         Int?
+  execution_id_                                                String?                @db.VarChar(64)
+  proc_inst_id_                                                String?                @db.VarChar(64)
+  proc_def_id_                                                 String?                @db.VarChar(64)
+  case_execution_id_                                           String?                @db.VarChar(64)
+  case_inst_id_                                                String?                @db.VarChar(64)
+  case_def_id_                                                 String?                @db.VarChar(64)
+  name_                                                        String?                @db.VarChar(255)
+  parent_task_id_                                              String?                @db.VarChar(64)
+  description_                                                 String?                @db.VarChar(4000)
+  task_def_key_                                                String?                @db.VarChar(255)
+  owner_                                                       String?                @db.VarChar(255)
+  assignee_                                                    String?                @db.VarChar(255)
+  delegation_                                                  String?                @db.VarChar(64)
+  priority_                                                    Int?
+  create_time_                                                 DateTime?              @db.Timestamp(6)
+  due_date_                                                    DateTime?              @db.Timestamp(6)
+  follow_up_date_                                              DateTime?              @db.Timestamp(6)
+  suspension_state_                                            Int?
+  tenant_id_                                                   String?                @db.VarChar(64)
+  act_re_case_def                                              act_re_case_def?       @relation(fields: [case_def_id_], references: [id_])
+  act_ru_case_execution                                        act_ru_case_execution? @relation(fields: [case_execution_id_], references: [id_])
+  act_ru_execution_act_ru_executionToact_ru_task_execution_id_ act_ru_execution?      @relation("act_ru_executionToact_ru_task_execution_id_", fields: [execution_id_], references: [id_])
+  act_re_procdef                                               act_re_procdef?        @relation(fields: [proc_def_id_], references: [id_])
+  act_ru_execution_act_ru_executionToact_ru_task_proc_inst_id_ act_ru_execution?      @relation("act_ru_executionToact_ru_task_proc_inst_id_", fields: [proc_inst_id_], references: [id_])
+  act_ru_identitylink                                          act_ru_identitylink[]
+
+  @@index([assignee_], name: "act_idx_task_assignee")
+  @@index([case_def_id_], name: "act_idx_task_case_def_id")
+  @@index([case_execution_id_], name: "act_idx_task_case_exec")
+  @@index([create_time_], name: "act_idx_task_create")
+  @@index([execution_id_], name: "act_idx_task_exec")
+  @@index([owner_], name: "act_idx_task_owner")
+  @@index([proc_def_id_], name: "act_idx_task_procdef")
+  @@index([proc_inst_id_], name: "act_idx_task_procinst")
+  @@index([tenant_id_], name: "act_idx_task_tenant_id")
+}
+
+model act_ru_task_meter_log {
+  id_            String    @id @db.VarChar(64)
+  assignee_hash_ BigInt?
+  timestamp_     DateTime? @db.Timestamp(6)
+
+  @@index([timestamp_], name: "act_idx_task_meter_log_time")
+}
+
+model act_ru_variable {
+  id_                                                                             String                 @id @db.VarChar(64)
+  rev_                                                                            Int?
+  type_                                                                           String                 @db.VarChar(255)
+  name_                                                                           String                 @db.VarChar(255)
+  execution_id_                                                                   String?                @db.VarChar(64)
+  proc_inst_id_                                                                   String?                @db.VarChar(64)
+  proc_def_id_                                                                    String?                @db.VarChar(64)
+  case_execution_id_                                                              String?                @db.VarChar(64)
+  case_inst_id_                                                                   String?                @db.VarChar(64)
+  task_id_                                                                        String?                @db.VarChar(64)
+  batch_id_                                                                       String?                @db.VarChar(64)
+  bytearray_id_                                                                   String?                @db.VarChar(64)
+  double_                                                                         Float?
+  long_                                                                           BigInt?
+  text_                                                                           String?                @db.VarChar(4000)
+  text2_                                                                          String?                @db.VarChar(4000)
+  var_scope_                                                                      String?                @db.VarChar(64)
+  sequence_counter_                                                               BigInt?
+  is_concurrent_local_                                                            Boolean?
+  tenant_id_                                                                      String?                @db.VarChar(64)
+  act_ru_batch                                                                    act_ru_batch?          @relation(fields: [batch_id_], references: [id_])
+  act_ge_bytearray                                                                act_ge_bytearray?      @relation(fields: [bytearray_id_], references: [id_])
+  act_ru_case_execution_act_ru_case_executionToact_ru_variable_case_execution_id_ act_ru_case_execution? @relation("act_ru_case_executionToact_ru_variable_case_execution_id_", fields: [case_execution_id_], references: [id_])
+  act_ru_case_execution_act_ru_case_executionToact_ru_variable_case_inst_id_      act_ru_case_execution? @relation("act_ru_case_executionToact_ru_variable_case_inst_id_", fields: [case_inst_id_], references: [id_])
+  act_ru_execution_act_ru_executionToact_ru_variable_execution_id_                act_ru_execution?      @relation("act_ru_executionToact_ru_variable_execution_id_", fields: [execution_id_], references: [id_])
+  act_ru_execution_act_ru_executionToact_ru_variable_proc_inst_id_                act_ru_execution?      @relation("act_ru_executionToact_ru_variable_proc_inst_id_", fields: [proc_inst_id_], references: [id_])
+
+  @@unique([var_scope_, name_], name: "act_uniq_variable")
+  @@index([batch_id_], name: "act_idx_batch_id")
+  @@index([bytearray_id_], name: "act_idx_var_bytearray")
+  @@index([case_execution_id_], name: "act_idx_var_case_exe")
+  @@index([case_inst_id_], name: "act_idx_var_case_inst_id")
+  @@index([execution_id_], name: "act_idx_var_exe")
+  @@index([proc_inst_id_], name: "act_idx_var_procinst")
+  @@index([task_id_], name: "act_idx_variable_task_id")
+  @@index([task_id_, name_, type_], name: "act_idx_variable_task_name_type")
+  @@index([tenant_id_], name: "act_idx_variable_tenant_id")
+}
+
+model az_department {
+  id                Int                 @id
+  domain_id         String?             @db.VarChar(255)
+  label             String?             @db.VarChar(255)
+  modified          DateTime?           @db.Timestamp(6)
+  status            String?             @db.VarChar(255)
+  az_membership     az_membership[]
+  iknito_researcher iknito_researcher[]
+}
+
+model az_membership {
+  id            BigInt         @id
+  ended         String?        @db.VarChar(255)
+  modified      DateTime?      @db.Timestamp(6)
+  started       String?        @db.VarChar(255)
+  status        String?        @db.VarChar(255)
+  department_id Int?
+  group_id_     String         @db.VarChar(255)
+  user_id_      String         @db.VarChar(255)
+  az_department az_department? @relation(fields: [department_id], references: [id])
+  act_id_group  act_id_group   @relation(fields: [group_id_], references: [id_])
+  act_id_user   act_id_user    @relation(fields: [user_id_], references: [id_])
+
+  @@unique([user_id_, group_id_, department_id, started], name: "uni_az_membership")
+}
+
+model az_notification {
+  id                  BigInt      @id
+  message             String?     @db.VarChar(2048)
+  persian_date        String      @db.VarChar(255)
+  process_instance_id String      @db.VarChar(255)
+  source              String      @db.VarChar(255)
+  status              Int?
+  type                String?     @db.VarChar(255)
+  recipient_id_       String      @db.VarChar(255)
+  act_id_user         act_id_user @relation(fields: [recipient_id_], references: [id_])
+}
+
+model iknito_researcher {
+  id              String         @id @db.VarChar(255)
+  expiration_date String?        @db.VarChar(255)
+  modified        DateTime?      @db.Timestamp(6)
+  score           Int?
+  start_date      String?        @db.VarChar(255)
+  status          Int?
+  department_id   Int?
+  user_id_        String         @db.VarChar(255)
+  az_department   az_department? @relation(fields: [department_id], references: [id])
+  act_id_user     act_id_user    @relation(fields: [user_id_], references: [id_])
+}

@@ -1,0 +1,57 @@
+{
+  "include": [
+    "src/**/*",
+    "public/**/*",
+    "scripts/**/*",
+    "test/**/*",
+    "typings/**/*",
+    ".storybook/**/*",
+    "prisma/**/*",
+    "next-env.d.ts"
+  ],
+  "exclude": ["node_modules",
+    "src/application/lib/gqlQueryTypes/globalTypes.ts"
+  ],
+  "compilerOptions": {
+    "incremental": true,
+    "resolveJsonModule": true,
+    "target": "esnext",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": true, // babel should transform files
+    "baseUrl": ".",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "paths": {
+      "$application/*": ["src/application/*"],
+      "$viewPorts": ["src/application/theme/viewPorts.ts"],
+      "$pages/*": ["src/pages/*"],
+      "$bpm/*": ["src/bpm/*"],
+      "$api/*": ["src/service/api/*"],
+      "$data/*": ["src/service/data/*"],
+      "$service/*": ["src/service/*"],
+      "$validator/*": ["src/service/validator/*"],
+      "$logger": ["src/service/logger.ts"],
+      "$errors": ["src/service/errors"],
+      "$test/*": ["test/*"],
+      "$utils": ["src/application/utils"],
+      "$prisma/*": ["prisma/*"],
+      "$backendPrisma/*": ["prisma/backendDatabase/*"],
+      "$camundaPrisma/*": ["prisma/camundaDatabase/*"]
+    },
+    "allowJs": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "importHelpers": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "noUnusedParameters": false,
+    "noUncheckedIndexedAccess": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}

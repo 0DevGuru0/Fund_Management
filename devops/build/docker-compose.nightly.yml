@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  iknito-smartfund:
+    image: 575302467300.dkr.ecr.eu-central-1.amazonaws.com/iknito-workflow/smartfund:latest
+    build:
+      args:
+        - NEXT_PUBLIC_FUND_APPLICATION_PROCESS=APCFundRequest
+        - NEXT_PUBLIC_REPO_SERVER_ADDRESS=https://repo.sf.iknito.com/api/v1/graphql
+        - NEXT_PUBLIC_API_SERVER_ADDRESS=https://nightly.smartfund.iknito.com/api/v1
+        - NEXT_PUBLIC_SERVER_ADDRESS=https://nightly.smartfund.iknito.com
+        - NEXT_PUBLIC_APP_TITLE='iKnito Smart Fund Nightly'

@@ -1,0 +1,19 @@
+image: gitpod/workspace-full:branch-aledbf-docker20
+
+tasks:
+  - name: init
+  - init: |
+      touch /tmp/.npm-lock
+      npm install
+      npm run reinit
+      rm /tmp/.npm-lock
+  - name: dev server
+    init: sleep 1 && while [ -f /tmp/.npm-lock ]; do sleep 1; done
+    command: cd apc && npm run start
+  - name: storybook
+    init: sleep 1 && while [ -f /tmp/.npm-lock ]; do sleep 1; done
+    command: cd apc && npm run storybook
+
+ports:
+  - port: 3000
+    onOpen: open-browser

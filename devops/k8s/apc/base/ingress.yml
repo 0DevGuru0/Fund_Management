@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: iknito-workflow
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - '*.smartfund.iknito.com'
+    - 'smartfund.iknito.com'
+    secretName: iknito-camunda-cert
+  rules: []
